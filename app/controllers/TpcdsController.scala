@@ -34,14 +34,15 @@ import org.joda.time.DateTime
 import mongo.aggregation.TpcdsDb
 import mongo.aggregation.TpcdsDb
 import controllers.requests.model.FilterRequest
+import controllers.requests.model.TestInject
 
 
 
-class TpcdsController @Inject() (val reactiveMongoApi: ReactiveMongoApi) extends Controller {
+class TpcdsController @Inject() (val reactiveMongoApi: ReactiveMongoApi,
+  val tpcdsDb:TpcdsDb ) extends Controller {
 
   val log:Logger = Logger(getClass);
   
-  val tpcdsDb:TpcdsDb = new TpcdsDb();
   
   def collection: Future[JSONCollection] =
     reactiveMongoApi.database.map(_.collection[JSONCollection]("tpcds"))
@@ -120,11 +121,7 @@ class TpcdsController @Inject() (val reactiveMongoApi: ReactiveMongoApi) extends
     }
   }
   
-  def graph = Action.async{ implicit request =>
-    val x = collection.flatMap(tpcdsDb.aggregateValuesForTopGraph(_))
-    x.map( a => Ok(Json.toJson(a))) 
-  }
-
+  
   /*
    * Method that implements below query
    *  db.tpcds.aggregate([{$unwind:"$workloads"},
@@ -135,6 +132,11 @@ class TpcdsController @Inject() (val reactiveMongoApi: ReactiveMongoApi) extends
    * 
    * */
   
+  def graph = Action.async{ implicit request =>
+    val x = tpcdsDb.aggregateValuesForTopGraph()
+    x.map( a => Ok(Json.toJson(a))) 
+  }
+
   
   def read_by_date(date: String) = Action.async{
     val found = collection.map(_.find(Json.obj("date" -> Json.obj("$regex" -> new JsString(date+".*"))))
@@ -158,7 +160,7 @@ class TpcdsController @Inject() (val reactiveMongoApi: ReactiveMongoApi) extends
         Future { BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toJson(errors))) }
       },
       frRequest => {
-         val x = collection.flatMap(tpcdsDb.filterByQnameAndDates(_,frRequest.from_date,frRequest.to_date,frRequest.q_name))
+         val x = tpcdsDb.filterByQnameAndDates(frRequest.from_date,frRequest.to_date,frRequest.q_name)
          x.map( a => Ok(Json.toJson(a)))     
       })
   }
