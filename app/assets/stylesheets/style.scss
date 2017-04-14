@@ -8,7 +8,7 @@ html {
   }
 }
 	
-.nav >ul {
+ul.topNav {
     list-style-type: none;
     margin: 0;
     padding: 0;
@@ -16,11 +16,11 @@ html {
     background-color: #333;
 }
 
-.nav > ul>li {
+ ul.topNav>li {
     float: left;
 }
 
-.nav >ul >li >a {
+ul.topNav >li >a {
     display: block;
     color: white;
     text-align: center;
@@ -28,9 +28,56 @@ html {
     text-decoration: none;
 }
 
-.nav >ul>li >a:hover {
+ul.topNav>li >a:hover {
     background-color: #111;
 }
 
 .dot:hover { fill: #2B98F0; stroke: white; stroke-width: .2em; }
 
+
+div.tab {
+    float: left;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+    height: 100%;
+    position: absolute;
+}
+
+/* Style the buttons inside the tab */
+div.tab button {
+    display: block;
+    background-color: inherit;
+    color: black;
+    padding: 8px 21px;
+    width: 100%;
+    border: none;
+    outline: none;
+    text-align: left;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 17px;
+}
+
+/* Change background color of buttons on hover */
+div.tab button:hover {
+    background-color: #ddd;
+}
+
+/* Create an active/current "tab button" class */
+div.tab button.active {
+    background-color: #ccc;
+}
+
+.tabContent{
+
+	float: left;
+    padding-left: 150px;
+}
+.chartAlign{
+	float:left;
+	padding-right:20px;
+}
+.querNameAlign{
+	text-align:center;
+	font-weight:bold;
+}
