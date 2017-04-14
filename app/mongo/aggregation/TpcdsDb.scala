@@ -9,10 +9,22 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.libs.json.JsString
 import play.api.libs.json.Json
+import com.google.inject.ImplementedBy
+import play.api.libs.json.JsObject
 
-class TpcdsDb () {
-  
-  def TpcdsDb()= {
+@ImplementedBy(classOf[TpcdsDbMongo])
+trait TpcdsDb{
+  def aggregateValuesForTopGraph():Future[List[play.api.libs.json.JsObject]] ;
+  def filterByQnameAndDates(fromDate:String , toDate:String , qName:String):Future[List[play.api.libs.json.JsObject]] ;;  
+}
+
+
+class TpcdsDbMongo  @Inject() (val reactiveMongoApi: ReactiveMongoApi)  extends TpcdsDb{
+
+  def collection: Future[JSONCollection] =
+    reactiveMongoApi.database.map(_.collection[JSONCollection]("tpcds"))
+    
+  def TpcdsDbMongo()= {
     
   }
   
@@ -21,7 +33,18 @@ class TpcdsDb () {
 
   
   
-  def aggregateValuesForTopGraph(col:JSONCollection) = {
+  /*
+   * Method that implements below query
+   *  db.tpcds.aggregate([{$unwind:"$workloads"},
+		{$unwind:"$workloads.metrics"},
+		{$group:{_id:{date:"$date",name:"$workloads.metrics.name"},average:{$avg:"$workloads.metrics.value"}}},
+		{$sort:{"_id.date":1}}])
+		
+   * 
+   * */
+  
+  def aggregateValuesForTopGraph():Future[List[JsObject]] = {
+    collection.flatMap(col => {
     import col.BatchCommands.AggregationFramework.{AggregationResult, 
       Group, 
       AvgField,
@@ -44,16 +67,29 @@ class TpcdsDb () {
       )
     )
     res.map(_.firstBatch)
+    })
   }
  
+  /**
+   * db.tpcds.aggregate([{$unwind:"$workloads"},
+   * {$match:
+   * 		{$and:[
+   * 			{"workloads.name":"q4-v1.4"},
+   * 			{"date":{$gt:"2016-03-15"}},
+   * 			{"date":{$lt:"2017-03-16"}}]
+   * 		}
+   * }])
+   */
   
-  def filterByQnameAndDates(col:JSONCollection, fromDate:String , toDate:String , qName:String) = {
+  def filterByQnameAndDates(fromDate:String , toDate:String , qName:String):Future[List[JsObject]] = {
+    collection.flatMap(col => {
     import col.BatchCommands.AggregationFramework.{AggregationResult, 
       UnwindField,
       Match
       }
     
-    //JSON object with two fields date and name, with respective $ values 
+    //JSON object with three fields date and name, with respective $ values 
+    //wrapped in a $and
     val matchDoc =  Json.obj("$and" -> 
         Json.arr(
         Json.obj("workloads.name" -> new JsString(qName)),
@@ -69,5 +105,6 @@ class TpcdsDb () {
       )
     
     res.map(_.firstBatch)
+    })
   }
 }

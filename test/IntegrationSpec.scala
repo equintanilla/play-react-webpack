@@ -25,7 +25,7 @@ class IntegrationSpec extends Specification {
 
       browser.goTo("http://localhost:" + port)
 
-      browser.pageSource must contain("Ninja")
+      browser.pageSource must contain("CI")
     }
   }
 }
