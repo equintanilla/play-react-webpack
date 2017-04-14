@@ -59,26 +59,35 @@ export class Mockup extends React.Component <any,any>{
             onActiveTab={ this.setActiveTab.bind(this, i) }
           />
         }, this);
+	   var query_names =["q1-1.4","q2-1.4","q3-1.4","q4-1.4","q5-1.4","q6-1.4","q7-1.4","q8-1.4","q9-1.4","q10-1.4"]
+	   var i=0;
        return(
 		   <div>
-		   <div className="tab">
-			{ tabs }
-		   </div>
-		   <div className="tabContent">
-		   <h1>Spark Performance Benchmark trend</h1> 
-		   <br/>
-		   <DateRangePicker
-				  startDate={this.state.startDate}
-				  endDate={this.state.endDate}
-				  onDatesChange={({ startDate, endDate }) => this.setState({ startDate, endDate })} 
-				  focusedInput={this.state.focusedInput}
-				  displayFormat={this.state.dateFormat}
-				  onFocusChange={focusedInput => this.setState({ focusedInput })} 
-			/>
-			<br/>
-			<br/>
-			<br/>
-		   <Graph /><Graph /><Graph /><Graph /><Graph /><Graph /><Graph /><Graph /><Graph /><Graph /></div></div>
+			   <div className="tab">
+					{ tabs }
+				   </div>
+				   <div className="tabContent">
+				   <h1>Spark Performance Benchmark trend</h1> 
+				   <br/>
+				   <DateRangePicker
+						  startDate={this.state.startDate}
+						  endDate={this.state.endDate}
+						  onDatesChange={({ startDate, endDate }) => this.setState({ startDate, endDate })} 
+						  focusedInput={this.state.focusedInput}
+						  displayFormat={this.state.dateFormat}
+						  onFocusChange={focusedInput => this.setState({ focusedInput })} 
+					/>
+					<button type="button" className="btn-lg btnMargin">Apply</button>
+					<br/>
+					<br/>
+					<br/>
+					 {
+						query_names.map((names) => {							
+							return <Graph queryname={names}/>
+						})
+					 }					
+				</div>
+			</div>
 	   );
     }
 }
