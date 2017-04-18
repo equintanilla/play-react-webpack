@@ -94,7 +94,7 @@ export class Graph extends React.Component<any,any>{
 					})		
 				}
 			</LineChart>
-			<p className="querNameAlign">q1-1.4</p>
+			<p className="querNameAlign">{this.props.queryname}</p>
 			<br/><br/>					
 			</div>
 	  );

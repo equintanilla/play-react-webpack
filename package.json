@@ -39,7 +39,9 @@
     "recharts": "^0.21.2",
     "reflect-metadata": "^0.1.10",
     "url-loader": "^0.5.8",
-    "react-dates":"10.1.0"
+    "react-dates":"10.1.0",
+    "moment":"2.15.1",
+    "react-addons-shallow-compare":"15.5.2"	
   },
   "devDependencies": {
     "@types/lodash": "^4.14.61",
@@ -64,9 +66,6 @@
     "source-map-loader": "^0.2.0",
     "style-loader": "^0.13.2",
     "typescript": "^2.2.2",
-    "webpack": "^1.12.10",
-    "react-router-dom": "^4.0.0",
-    "moment":"2.15.1",
-    "react-addons-shallow-compare":"15.5.2"	
+    "webpack": "^1.12.10"
    }
 }
