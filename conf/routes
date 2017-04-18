@@ -16,3 +16,5 @@ GET        /api/t_benchmark_date/:date      controllers.TpcdsController.read_by_
 POST       /api/t_benchmark          controllers.TpcdsController.create_exp
 GET        /api/t_benchmarks/graph         controllers.TpcdsController.graph
 POST       /api/t_benchmarks/read_by_dates_qname controllers.TpcdsController.read_by_dates_qname
+
+GET       /secured controllers.SecuredScalaController.index()

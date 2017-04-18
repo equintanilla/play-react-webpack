@@ -15,6 +15,8 @@ libraryDependencies ++= Seq(
 )
 
 libraryDependencies ++= Seq(
+  "com.mohiva" %% "play-silhouette" % "4.0.0",
+  "com.mohiva" %% "play-silhouette-password-bcrypt" % "4.0.0",
   "org.reactivemongo" %% "play2-reactivemongo" % "0.12.1"
 )
 

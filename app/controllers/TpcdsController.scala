@@ -53,8 +53,8 @@ class TpcdsController @Inject() (val reactiveMongoApi: ReactiveMongoApi,
    
     val found = collection.map(_.find(Json.obj())
         .sort(Json.obj("date" -> -1))
-        .cursor[Tpcds]()
-        .collect(-1, Cursor.FailOnError[List[Tpcds]]())
+        .cursor[JsObject]()
+        .collect(-1, Cursor.FailOnError[List[JsObject]]())
         )
  
     found.flatMap(benchMarks => benchMarks.map(bmList => Ok(Json.toJson(bmList))))    
