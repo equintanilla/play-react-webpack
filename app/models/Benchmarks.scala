@@ -8,7 +8,7 @@ import play.api.libs.functional.syntax.{ unapply, unlift }
 import play.api.libs.json.OWrites
 
 case class Tpcds(name: String,
-                 cluster_info: Option[ClusterInfo],
+                 cluster_info: ClusterInfo,
                  git_url: String,
                  last_commit: String,
                  date: DateTime,
@@ -21,6 +21,9 @@ case class NodeInfo(hostname: String, ip: String, ram: String, vcpus: Int)
 
 object Tpcds {
 
+  /*
+   * Json.reads and Json.writes are macros
+   * */
   implicit val jodaDateReads = Reads.jodaDateReads("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
   implicit val jodaDateWrites = Writes.jodaDateWrites("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 
@@ -32,8 +35,11 @@ object Tpcds {
     (JsPath \ "name").read[String] and
     (JsPath \ "metrics").read[Seq[Metric]])(Workload.apply _)*/
 
-  implicit val clusterInfoReads: Reads[ClusterInfo] = Json.reads[ClusterInfo]
   implicit val nodeInfoReads: Reads[NodeInfo] = Json.reads[NodeInfo]
+  
+  implicit val clusterInfoReads: Reads[ClusterInfo] = Json.reads[ClusterInfo]
+  
+  
 
   implicit val tpcdsReads: Reads[Tpcds] = Json.reads[Tpcds] /*(
     (JsPath \ "name").read[String] and
@@ -45,8 +51,11 @@ object Tpcds {
 
   //All the writes
 
-  implicit val clusterInfoWrites: Writes[ClusterInfo] = Json.writes[ClusterInfo]
   implicit val nodeInfoWrites: Writes[NodeInfo] = Json.writes[NodeInfo]
+  
+  implicit val clusterInfoWrites: Writes[ClusterInfo] = Json.writes[ClusterInfo]
+  
+  
 
   implicit val metricWrites: Writes[Metric] = Json.writes[Metric] /*(
     (JsPath \ "name").write[String] and
