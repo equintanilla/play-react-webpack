@@ -35,5 +35,6 @@ watchSources ~= { (ws: Seq[File]) =>
 pipelineStages := Seq(digest, gzip)
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
+resolvers += "Atlassian Releases" at "https://maven.atlassian.com/public/"
 
 
