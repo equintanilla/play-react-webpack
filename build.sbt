@@ -17,6 +17,9 @@ libraryDependencies ++= Seq(
 libraryDependencies ++= Seq(
   "com.mohiva" %% "play-silhouette" % "4.0.0",
   "com.mohiva" %% "play-silhouette-password-bcrypt" % "4.0.0",
+  "net.codingwell" %% "scala-guice" % "4.0.1",
+  "com.mohiva" %% "play-silhouette-crypto-jca" % "4.0.0",
+  "com.iheart" %% "ficus" % "1.2.6",
   "org.reactivemongo" %% "play2-reactivemongo" % "0.12.1"
 )
 
