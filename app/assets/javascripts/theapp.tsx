@@ -7,7 +7,7 @@ import {Mockup} from './components/Mockup';
 import {
   BrowserRouter,
   Route,
-  Link
+  NavLink
 } from 'react-router-dom'
 import '../stylesheets/style.scss';
 
@@ -28,9 +28,9 @@ class TheApp extends React.Component<any,any>{
         <BrowserRouter>
         <div>
         <ul className="topNav">        
-        <li> <Link to="/app/rawdata">Raw data</Link> </li>
-        <li> <Link to="/app/graph">Graph</Link> </li> 
-		<li> <Link to="/app/mockup">Mockup</Link> </li>  		
+        <li> <NavLink to="/app/rawdata" activeClassName="active" >Raw data</NavLink> </li>
+        <li> <NavLink to="/app/graph" activeClassName="active" >Graph</NavLink> </li> 
+		<li> <NavLink to="/app/mockup" activeClassName="active" >Tpcds</NavLink> </li>  		
         </ul>               
                 <Route path="/app/rawdata" component={TPCDS}/>              
                 <Route path="/app/graph" component={Graph}/>  

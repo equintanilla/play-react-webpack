@@ -39,5 +39,4 @@ pipelineStages := Seq(digest, gzip)
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
 resolvers += "Atlassian Releases" at "https://maven.atlassian.com/public/"
-
-
+resolvers += "jcenter" at "https://jcenter.bintray.com/"

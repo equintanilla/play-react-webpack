@@ -80,8 +80,10 @@ export class Graph extends React.Component<any,any>{
 		var i = 0;
 		var strokes_fill = ["#8884d8","#ff7300","#82ca9d","#8884d8"];
 		return (
-			<div className="chartAlign"> 
-			<LineChart width = {450} height = {250} data = {this.state.data}>
+			<div className="chartAlign">
+			<h1>Spark Performance Benchmark trend</h1> 
+			<br/>							
+			<LineChart width = {600} height = {300} data = {this.state.data}>
 				<XAxis dataKey = "name"/>
 				<YAxis/>
 				<CartesianGrid strokeDasharray = "3 3"/>
@@ -95,7 +97,8 @@ export class Graph extends React.Component<any,any>{
 				}
 			</LineChart>
 			<p className="querNameAlign">{this.props.queryname}</p>
-			<br/><br/>					
+			<br/><br/>	
+			<MetricTable data={this.state.benchmark_date_json} metric_names={this.state.col_names} />			
 			</div>
 	  );
 	}

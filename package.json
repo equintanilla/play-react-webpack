@@ -41,7 +41,8 @@
     "url-loader": "^0.5.8",
     "react-dates":"10.1.0",
     "moment":"2.15.1",
-    "react-addons-shallow-compare":"15.5.2"	
+    "react-addons-shallow-compare":"15.5.2",
+	"react-collapsible":"1.4.0"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.61",
