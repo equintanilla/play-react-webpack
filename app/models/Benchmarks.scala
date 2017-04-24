@@ -9,6 +9,7 @@ import play.api.libs.json.OWrites
 
 case class Tpcds(name: String,
                  cluster_info: ClusterInfo,
+                 spark_params:SparkParams,
                  git_url: String,
                  last_commit: String,
                  date: DateTime,
@@ -18,6 +19,28 @@ case class Workload(name: String, metrics: Seq[Metric])
 case class Metric(name: String, value: Float)
 case class ClusterInfo(master: NodeInfo, slaves: List[NodeInfo])
 case class NodeInfo(hostname: String, ip: String, ram: String, vcpus: Int)
+case class SparkParams(num_executors:String, executor_cores:String,executor_memory:String,
+    driver_memory:String,driver_cores:String,total_executor_cores:String,
+    shuffle_partitions:String, gc_threads:String,exec_memoryOverhead:String,
+    driver_memoryOverhead:String)
+    
+    /**
+     * Nikhil Kalbande
+1:25 PM
+{
+"num_executors":"2",
+"executor_cores":"2",
+"executor_memory":"2g",
+"driver_memory":"22g",
+"driver_cores":"10",
+"total_executor_cores":"null",
+"shuffle_partitions":"2",
+"gc_threads":"2",
+"exec_memoryOverhead":"136",
+"driver_memoryOverhead":"400"
+} 
+     * 
+     */
 
 object Tpcds {
 
@@ -39,7 +62,7 @@ object Tpcds {
   
   implicit val clusterInfoReads: Reads[ClusterInfo] = Json.reads[ClusterInfo]
   
-  
+  implicit val sparkParamsReads: Reads[SparkParams] = Json.reads[SparkParams]
 
   implicit val tpcdsReads: Reads[Tpcds] = Json.reads[Tpcds] /*(
     (JsPath \ "name").read[String] and
@@ -50,7 +73,8 @@ object Tpcds {
     (JsPath \ "workloads").read[Seq[Workload]])(Tpcds.apply _)*/
 
   //All the writes
-
+  implicit val sparkParamsWrites: Writes[SparkParams] = Json.writes[SparkParams]
+  
   implicit val nodeInfoWrites: Writes[NodeInfo] = Json.writes[NodeInfo]
   
   implicit val clusterInfoWrites: Writes[ClusterInfo] = Json.writes[ClusterInfo]

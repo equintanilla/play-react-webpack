@@ -115,7 +115,7 @@ class TpcdsController @Inject() (val reactiveMongoApi: ReactiveMongoApi,
   
   def wrToResult(wr: WriteResult): Result = {
     if (wr.ok) {
-      Ok(wr.n + " Rows updated")
+      Ok(wr.n + " row(s) inserted")
     } else {
       BadRequest(wr.writeErrors.mkString(","))
     }
