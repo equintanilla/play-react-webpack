@@ -129,28 +129,28 @@ export class Mockup extends React.Component <any,any>{
 	}
 	showIP(cell, row, enumObject, index){
 		if(cell instanceof Array){
-			return cell[index].ip
+			return cell[enumObject].ip
 		}else{
 			return cell.ip
 		}
 	}
 	showHostname(cell, row, enumObject, index){
 		if(cell instanceof Array){
-			return cell[index].hostname
+			return cell[enumObject].hostname
 		}else{
 			return cell.hostname
 		}
 	}
 	showVcpus(cell, row, enumObject, index){
 		if(cell instanceof Array){
-			return cell[index].vcpus
+			return cell[enumObject].vcpus
 		}else{
 			return cell.vcpus
 		}
 	}
 	showRAM(cell, row, enumObject, index){
 		if(cell instanceof Array){
-			return cell[index].ram
+			return cell[enumObject].ram
 		}else{
 			return cell.ram
 		}
@@ -205,10 +205,10 @@ export class Mockup extends React.Component <any,any>{
 											{this.state.cluster_info.map(info=>info.slaves.map((slave,i)=>{ 											
 											return  [											
 												<TableHeaderColumn  row='0' colSpan="4" thStyle={ { "textAlign": "center"} }>Slave {i+1}</TableHeaderColumn>	,											
-												<TableHeaderColumn  row='1' dataField='slaves'  dataFormat={this.showIP} >IP</TableHeaderColumn>,
-												<TableHeaderColumn  row='1' dataField='slaves'  dataFormat={this.showHostname}>Hostname</TableHeaderColumn>,
-												<TableHeaderColumn  row='1' dataField='slaves' dataFormat={this.showVcpus} >VCPUS</TableHeaderColumn>,												
-												<TableHeaderColumn  row='1' dataField='slaves' dataFormat={this.showRAM} >RAM</TableHeaderColumn>	
+												<TableHeaderColumn  row='1' dataField='slaves' formatExtraData={i} dataFormat={this.showIP} >IP</TableHeaderColumn>,
+												<TableHeaderColumn  row='1' dataField='slaves' formatExtraData={i} dataFormat={this.showHostname}>Hostname</TableHeaderColumn>,
+												<TableHeaderColumn  row='1' dataField='slaves' formatExtraData={i} dataFormat={this.showVcpus} >VCPUS</TableHeaderColumn>,												
+												<TableHeaderColumn  row='1' dataField='slaves' formatExtraData={i} dataFormat={this.showRAM} >RAM</TableHeaderColumn>	
 												]																						
 											}))
 											}
