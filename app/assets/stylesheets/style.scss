@@ -1,6 +1,6 @@
 html {
   $primary-color: white;
-
+  
   body {
     background-color: $primary-color;
     border-width: 1px;
@@ -28,7 +28,7 @@ ul.topNav >li >a {
     text-decoration: none;
 }
 
-ul.topNav>li >a:hover {
+ul.topNav>li >a:hover, ul.topNav>li >a.active {
     background-color: #111;
 }
 
@@ -48,7 +48,7 @@ div.tab button {
     display: block;
     background-color: inherit;
     color: black;
-    padding: 8px 21px;
+    padding: 8px 10px;
     width: 100%;
     border: none;
     outline: none;
@@ -69,13 +69,11 @@ div.tab button.active {
 }
 
 .tabContent{
-
-	float: left;
-    padding-left: 150px;
+    padding-left: 130px;
 }
 .chartAlign{
 	float:left;
-	padding-right:20px;
+	padding-right:30px;
 }
 .querNameAlign{
 	text-align:center;
@@ -83,4 +81,89 @@ div.tab button.active {
 }
 .btnMargin{
 	margin-left: 20px;
+}
+
+.mockupContainer{
+	float: left;
+    width: 100%;
+}
+
+.ReactCollapse--collapse {
+  border: 1px solid rgba(3, 169, 244, 0.3);
+  border-radius: 10px;
+  height: 100% !important;
+}
+
+.dateLink{
+	cursor:pointer;
+	padding:10px;
+	background-color: #eee;
+    color: #333;
+    border-radius: 4px;
+	text-decoration: none;
+}
+a.dateLink:hover {
+    text-decoration: none;
+}
+.dateLink.active {
+    text-decoration: none;
+	background-color: #ccc;
+}
+.Collapsible {
+  background-color: white; }
+
+.Collapsible__contentInner {
+  padding: 10px;
+  border: 1px solid #ebebeb;
+  border-top: 0;
+  
+ }
+ 
+.Collapsible__contentInner p {
+    margin-bottom: 10px;
+    font-size: 14px;
+    line-height: 20px;
+}
+.Collapsible__contentInner p:last-child {
+    margin-bottom: 0; 
+}
+
+.Collapsible__trigger {
+  display: block;
+  font-weight: 400;
+  text-decoration: none;
+  color: #333333;
+  position: relative;
+  border: 1px solid white;
+  padding: 10px;
+  background: #00ac9d;
+  color: white;
+  cursor:pointer;
+}
+  
+ .Collapsible__trigger:after {
+    font-family: 'FontAwesome';
+    content: '\002B';
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    display: block;
+    transition: transform 300ms;
+}
+
+.Collapsible__trigger.is-open:after {
+    content: "\2212";
+}
+.Collapsible__trigger.is-disabled {
+    opacity: 0.5;
+    background-color: grey;
+}
+
+.CustomTriggerCSS {
+  background-color: lightcoral;
+  transition: background-color 200ms ease;
+}
+
+.CustomTriggerCSS--open {
+  background-color: darkslateblue; 
 }

@@ -13,8 +13,12 @@ class TpcdsBenchmarkService implements BenchmarkService{
         return axios.get("/api/t_benchmarks/graph",
                 {headers: {'Content-Type': 'application/json'}});
     }
-	getBenchmarksOnDates(date){
+	getBenchmarksOnDates(date:any){
 		return axios.get("/api/t_benchmark_date/"+date,
+                {headers: {'Content-Type': 'application/json'}});
+	}
+	getBenchmarksForDates(startDate:any,endDate:any,queryName:any){
+		return axios.post("/api/t_benchmarks/read_by_dates_qname",{"from_date":startDate,"to_date":endDate,"q_name":queryName},
                 {headers: {'Content-Type': 'application/json'}});
 	}
 }
