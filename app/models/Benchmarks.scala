@@ -12,6 +12,7 @@ case class Tpcds(name: String,
                  spark_params:SparkParams,
                  git_url: String,
                  last_commit: String,
+                 branch: String,
                  date: DateTime,
                  master: String,
                  workloads: Seq[Workload])
