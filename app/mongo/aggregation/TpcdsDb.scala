@@ -94,7 +94,7 @@ class TpcdsDbMongo  @Inject() (val reactiveMongoApi: ReactiveMongoApi)  extends 
         Json.arr(
         Json.obj("workloads.name" -> new JsString(qName)),
         Json.obj("date" -> Json.obj("$gt" -> new JsString(fromDate))),
-        Json.obj("date" -> Json.obj("$lt" -> new JsString(toDate)))
+        Json.obj("date" -> Json.obj("$lt" -> new JsString(toDate+"T23:23:59.999Z")))
       )
     )
     //this api takes two parameters, first is the first operator in the pipeline
