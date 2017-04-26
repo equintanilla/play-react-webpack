@@ -1,7 +1,7 @@
 import * as  React from 'react';
 
 export default class MockupLabelAsPoint extends React.Component <any,any>{
-	propTypes :{
+	static childPropsTypes = {
 		getClusterInfo: React.PropTypes.func,
 	}
 	constructor(props:any){

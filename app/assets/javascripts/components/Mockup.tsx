@@ -10,8 +10,8 @@ import { BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import 'bootstrap/dist/css/bootstrap.css';
 import Collapsible from 'react-collapsible';
 
-var Tab = React.createClass({
-  render: function() {
+export class Tab extends React.Component <any,any>{
+  render() {
     return <button 
       className={ this.props.isActive ? 'active': '' }
       onClick={ this.props.onActiveTab }
@@ -19,11 +19,11 @@ var Tab = React.createClass({
       <p>{ this.props.content }</p>
     </button>
   }
-});
+}
 const leftNavTabs = ["q1-q10", "q11-q20", "q21-q30", "q31-q40", "q41-q50", "q51-q60", "q61-q70", "q71-q80", "q81-q90", "q91-q100"]
 
-let initialStartDate: object=null;
-let initialEndDate: object=null;
+let initialStartDate: any=null;
+let initialEndDate: any=null;
 
 export class Mockup extends React.Component <any,any>{
 
@@ -40,11 +40,12 @@ export class Mockup extends React.Component <any,any>{
 			graphParamEndDate:null,
 			graphData:[],
 			cluster_info:[],
+			spark_params:[],
 			selectedDateIndex:null
 		}
 	}
   
-	isActive(id) {
+	isActive(id:number) {
 		return this.state.selectedTabId === id;
 	} 
 	
@@ -58,15 +59,17 @@ export class Mockup extends React.Component <any,any>{
 			q_names.push("q"+i+"-v1.4");
 		}
 		this.setState({cluster_info:[]})
+		this.setState({spark_params:[]})
 		this.setState({graphData:[]})
+		this.setState({ selectedDateIndex: null });
 		this.setState({query_names:q_names})
 	}
 	
 	getDate(lastMonth:boolean){
 		var d = new Date(); 
-		var year = d.getFullYear();
-		var month = d.getMonth()+1;
-		var dt = d.getDate();
+		var year:any = d.getFullYear();
+		var month:any = d.getMonth()+1;
+		var dt:any = d.getDate();
 		if(lastMonth){
 			month = month-1;
 		}
@@ -83,7 +86,7 @@ export class Mockup extends React.Component <any,any>{
 	componentDidMount(){	
 		//set initial start and end date
 		 initialStartDate = moment(this.getDate(true),this.state.dateFormat);
-		 initialEndDate = moment(this.getDate(),this.state.dateFormat);
+		 initialEndDate = moment(this.getDate(false),this.state.dateFormat);
 		 
 		 this.setState({startDate: initialStartDate});
 		 this.setState({endDate: initialEndDate});	
@@ -94,6 +97,8 @@ export class Mockup extends React.Component <any,any>{
 	
 	handleBtnClick(){
 		this.setState({cluster_info:[]})
+		this.setState({spark_params:[]})
+		this.setState({ selectedDateIndex: null });
 		this.setState({graphData:[]})
 		var stdate = this.state.startDate;
 		var endate = this.state.endDate;
@@ -102,12 +107,15 @@ export class Mockup extends React.Component <any,any>{
 		
 	}
 	
-	handleDateClick(date,index){		
-		var cluster_data =[];
-		this.state.graphData.map(obj=>{ if(obj.date === date) 
+	handleDateClick(date:any,index:number){		
+		var cluster_data:Array<any> =[];
+		var spark_data:Array<any> =[];
+		this.state.graphData.map((obj:any)=>{ if(obj.date === date) 
 			{
 				cluster_data.push(obj.cluster_info)
+				spark_data.push(obj.spark_params)
 				this.setState({cluster_info:cluster_data})
+				this.setState({spark_params:spark_data})
 			}
 			});
 		this.setState({ selectedDateIndex: index });
@@ -117,9 +125,9 @@ export class Mockup extends React.Component <any,any>{
 		return (date.isSameOrBefore(startDate) || date.isAfter(endDate));
 	}
 	
-	setGraphData(graphData){
-		var data = this.state.graphData;
-		var found = data.filter(function(obj){
+	setGraphData(graphData:any){
+		var data:Array<any> = this.state.graphData;
+		var found:Array<any> = data.filter(function(obj){
 			return obj.date == graphData.date
 		})
 		if(found.length == 0){
@@ -127,28 +135,28 @@ export class Mockup extends React.Component <any,any>{
 			this.setState({graphData:data});
 		}			
 	}
-	showIP(cell, row, enumObject, index){
+	showIP(cell:any, row:any, enumObject:any, index:any){
 		if(cell instanceof Array){
 			return cell[enumObject].ip
 		}else{
 			return cell.ip
 		}
 	}
-	showHostname(cell, row, enumObject, index){
+	showHostname(cell:any, row:any, enumObject:any, index:any){
 		if(cell instanceof Array){
 			return cell[enumObject].hostname
 		}else{
 			return cell.hostname
 		}
 	}
-	showVcpus(cell, row, enumObject, index){
+	showVcpus(cell:any, row:any, enumObject:any, index:any){
 		if(cell instanceof Array){
 			return cell[enumObject].vcpus
 		}else{
 			return cell.vcpus
 		}
 	}
-	showRAM(cell, row, enumObject, index){
+	showRAM(cell:any, row:any, enumObject:any, index:any){
 		if(cell instanceof Array){
 			return cell[enumObject].ram
 		}else{
@@ -188,7 +196,7 @@ export class Mockup extends React.Component <any,any>{
 					 <Collapsible trigger="Cluster Info">
 					<div>
 						<div>
-						{ this.state.graphData.length != 0 ? this.state.graphData.map((obj,i)=>{ 
+						{ this.state.graphData.length != 0 ? this.state.graphData.map((obj:any,i:number)=>{ 
 							return (<a key={i} className = { this.state.selectedDateIndex == i ? "dateLink active" : "dateLink"} onClick={this.handleDateClick.bind(this,obj.date,i)}>{obj.date}</a>)
 						}):null}
 						</div>
@@ -197,25 +205,38 @@ export class Mockup extends React.Component <any,any>{
 					   { 				  
 							this.state.cluster_info.length != 0 ? <div>
 											<BootstrapTable data={this.state.cluster_info}  striped hover options={ { noDataText: 'No Date selected' } }>										
-											<TableHeaderColumn  row='0' rowSpan="2" isKey={ true } dataField='master' dataFormat={this.showIP} >Master IP</TableHeaderColumn>																				 
-											<TableHeaderColumn  row='0' rowSpan="2" dataField='master' dataFormat={this.showHostname} >Master Hostname</TableHeaderColumn>																				 
-											<TableHeaderColumn  row='0' rowSpan="2" dataField='master' dataFormat={this.showVcpus}>Master VCPUS</TableHeaderColumn>																				 
-											<TableHeaderColumn  row='0' rowSpan="2" dataField='master' dataFormat={this.showRAM} >Master RAM</TableHeaderColumn>	
-											
-											{this.state.cluster_info.map(info=>info.slaves.map((slave,i)=>{ 											
-											return  [											
-												<TableHeaderColumn  row='0' colSpan="4" thStyle={ { "textAlign": "center"} }>Slave {i+1}</TableHeaderColumn>	,											
-												<TableHeaderColumn  row='1' dataField='slaves' formatExtraData={i} dataFormat={this.showIP} >IP</TableHeaderColumn>,
-												<TableHeaderColumn  row='1' dataField='slaves' formatExtraData={i} dataFormat={this.showHostname}>Hostname</TableHeaderColumn>,
-												<TableHeaderColumn  row='1' dataField='slaves' formatExtraData={i} dataFormat={this.showVcpus} >VCPUS</TableHeaderColumn>,												
-												<TableHeaderColumn  row='1' dataField='slaves' formatExtraData={i} dataFormat={this.showRAM} >RAM</TableHeaderColumn>	
-												]																						
-											}))
-											}
-																																									 
-										</BootstrapTable>
-							</div>:this.state.graphData.length == 0 ? <p> No data </p>:<p>No date Selected</p>		  
-					   }
+												<TableHeaderColumn  row='0' rowSpan="2" isKey={ true } dataField='master' dataFormat={this.showIP} >Master IP</TableHeaderColumn>																				 
+												<TableHeaderColumn  row='0' rowSpan="2" dataField='master' dataFormat={this.showHostname} >Master Hostname</TableHeaderColumn>																				 
+												<TableHeaderColumn  row='0' rowSpan="2" dataField='master' dataFormat={this.showVcpus}>Master VCPUS</TableHeaderColumn>																				 
+												<TableHeaderColumn  row='0' rowSpan="2" dataField='master' dataFormat={this.showRAM} >Master RAM</TableHeaderColumn>	
+												
+												{this.state.cluster_info.map((info:any)=>info.slaves.map((slave:any,i:number)=>{ 											
+													return  [											
+														<TableHeaderColumn  row='0' colSpan="4" thStyle={ { "textAlign": "center"} }>Slave {i+1}</TableHeaderColumn>	,											
+														<TableHeaderColumn  row='1' dataField='slaves'  formatExtraData={i} dataFormat={this.showIP} >IP</TableHeaderColumn>,
+														<TableHeaderColumn  row='1' dataField='slaves' formatExtraData={i} dataFormat={this.showHostname}>Hostname</TableHeaderColumn>,
+														<TableHeaderColumn  row='1' dataField='slaves' formatExtraData={i} dataFormat={this.showVcpus} >VCPUS</TableHeaderColumn>,												
+														<TableHeaderColumn  row='1' dataField='slaves' formatExtraData={i} dataFormat={this.showRAM} >RAM</TableHeaderColumn>	
+														]																						
+													}))
+												}																																									 
+											</BootstrapTable><br/>
+							</div>: null}										
+							{this.state.spark_params.length != 0 ? <div>
+											<BootstrapTable data={this.state.spark_params}  striped hover options={ { noDataText: 'No Date selected' } }>										
+												<TableHeaderColumn  isKey={ true } dataField='num_executors' >Num Executors</TableHeaderColumn>																				 
+												<TableHeaderColumn  dataField='executor_cores' >Executor Cores</TableHeaderColumn>																				 
+												<TableHeaderColumn  dataField='executor_memory' >Executor Memory</TableHeaderColumn>																				 
+												<TableHeaderColumn  dataField='driver_memory' >Driver Memory</TableHeaderColumn>	
+												<TableHeaderColumn  dataField='driver_cores' >Driver Cores</TableHeaderColumn>	
+												<TableHeaderColumn  dataField='total_executor_cores' >Total Executor Cores</TableHeaderColumn>	
+												<TableHeaderColumn  dataField='shuffle_partitions' >Shuffle Partitions</TableHeaderColumn>	
+												<TableHeaderColumn  dataField='gc_threads' >GC Threads</TableHeaderColumn>	
+												<TableHeaderColumn  dataField='exec_memoryOverhead' >Exec Memory Overhead</TableHeaderColumn>	
+												<TableHeaderColumn  dataField='driver_memoryOverhead' >Driver Memory Overhead</TableHeaderColumn>	
+											</BootstrapTable>
+							</div>: null}
+							{this.state.graphData.length == 0 ? <p> No data </p>: this.state.selectedDateIndex == null ? <p>No date Selected</p>:null}
 					  </div>
 					</Collapsible>					  
 				  <br/>
@@ -224,7 +245,8 @@ export class Mockup extends React.Component <any,any>{
 							this.state.query_names.map((name:string,i:number) => {								
 								return <MockupGraph key={i} queryName={name} startDate={this.state.graphParamStartDate} endDate={this.state.graphParamEndDate} setGraphData={this.setGraphData.bind(this)}/>
 							})
-						}	
+						}
+						{this.state.graphData.length == 0 ? <p> No Data </p>:null}
 			   </div>
 		   </div>
 	   );

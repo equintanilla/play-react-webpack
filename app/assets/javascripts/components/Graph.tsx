@@ -24,11 +24,11 @@ export class Graph extends React.Component<any,any>{
 		let bm_service = container.get<BenchmarkService>(SERVICE_IDENTIFIER.BM_SERVICE);
 		return bm_service.getBenchmarksGraphs();
 	}
-	formatDate(date){
+	formatDate(date:any){
 		var d = new Date(date); 
-		var year = d.getFullYear();
-		var month = d.getMonth()+1;
-		var dt = d.getDate();
+		var year:any = d.getFullYear();
+		var month:any = d.getMonth()+1;
+		var dt:any = d.getDate();
 
 		if (dt < 10) {
 		  dt = '0' + dt;
@@ -41,21 +41,20 @@ export class Graph extends React.Component<any,any>{
 	}   
     componentDidMount(){
 		this.setState({loading: true}) 
-		let series = [];
+		let series: Array<any> = [];
         this.setState({loading: true}) 
-        this.getBenchMarks().then(res=>{
+        this.getBenchMarks().then((res:any)=>{
 			
-		let all_date = res.data.map(metric=>{ return this.formatDate(metric._id.date)});
+		let all_date = res.data.map((metric:any)=>{ return this.formatDate(metric._id.date)});
 		let x_Axis_labels = uniq(flatten(all_date));
-		let metric_names = uniq(flatten(res.data.map(metric=>metric._id.name)));
+		let metric_names = uniq(flatten(res.data.map((metric:any)=>metric._id.name)));
 		let that = this;
-		var series =[];
-			 
-		x_Axis_labels.forEach(function(date){
-			var d = {};
+		
+		x_Axis_labels.forEach(function(date:any){
+			var d: any = {};
 			d["name"] = date;
 			metric_names.forEach(function(names,index){
-				res.data.forEach(function(metric){
+				res.data.forEach(function(metric: any){
 					if((that.formatDate(metric._id.date) == date)){
 							d[metric._id.name] = metric.average;
 					} 								  
@@ -69,7 +68,7 @@ export class Graph extends React.Component<any,any>{
 			this.setState({loading: false});			
 		});
     }
-	handleClickFunc(table_data){
+	handleClickFunc(table_data:Array<any>){
 		this.setState({benchmark_date_json:table_data});
 	}
 	
@@ -90,7 +89,7 @@ export class Graph extends React.Component<any,any>{
 				<Tooltip/>
 				<Legend />
 				{	
-					this.state.metric_names.map((names) => {
+					this.state.metric_names.map((names:string) => {
 						{i++}
 						return (<Line key = {`line_{names}`} stroke = {strokes_fill[i]} dataKey = {names} activeDot = {false} label = {<LabelAsPoint getTableData={this.handleClickFunc.bind(this)} />} strokeWidth = {4}  />)
 					})		

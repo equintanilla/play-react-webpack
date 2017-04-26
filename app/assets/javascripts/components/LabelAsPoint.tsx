@@ -5,7 +5,7 @@ import BenchmarkService from "../services/benchmark_service";
 import SERVICE_IDENTIFIER from "../constants/identifiers";
 
 export default class LabelAsPoint extends React.Component <any,any>{
-	propTypes :{
+	static childPropsTypes = {
 		getTableData: React.PropTypes.func,
 	}
 	constructor(props:any){
@@ -14,18 +14,18 @@ export default class LabelAsPoint extends React.Component <any,any>{
     onClick = () => {
         const { index, key, payload } = this.props;
 		let date = this.formatDate(payload.name);
-		this.getBenchMarks(date).then(response=>{	
-			let returnData = [];
-			let all_dates = uniq(response.data.map(row=>row.date));
+		this.getBenchMarks(date).then((response: any)=>{	
+			let returnData: Array<any> = [];
+			let all_dates = uniq(response.data.map((row:any)=>row.date));
 			var that = this;
-			response.data.forEach(function(data){
+			response.data.forEach(function(data:any){
 				all_dates.forEach(function(metric_date){
 					if(data.date == metric_date){											
-						data.workloads.forEach(function(workload){
-							var d = {};
+						data.workloads.forEach(function(workload:any){
+							var d:any = {};
 							d["Date"] = that.formatDate(data.date);
 							d["Query Name"] = workload.name;
-							workload.metrics.forEach(function(metric){
+							workload.metrics.forEach(function(metric:any){
 								d[metric.name]=(metric.value).toFixed(2);							
 							});
 							returnData.push(d);
@@ -36,11 +36,11 @@ export default class LabelAsPoint extends React.Component <any,any>{
 			this.props.getTableData(returnData);
 		})
     }
-	formatDate(date){
+	formatDate(date:any){
 		var d = new Date(date); 
-		var year = d.getFullYear();
-		var month = d.getMonth()+1;
-		var dt = d.getDate();
+		var year:any = d.getFullYear();
+		var month:any = d.getMonth()+1;
+		var dt:any = d.getDate();
 
 		if (dt < 10) {
 		  dt = '0' + dt;
@@ -51,7 +51,7 @@ export default class LabelAsPoint extends React.Component <any,any>{
 
 		return year + '-' + month + '-' + dt;
 	} 
-	getBenchMarks(year){
+	getBenchMarks(year:any){
 		let bm_service = container.get<BenchmarkService>(SERVICE_IDENTIFIER.BM_SERVICE);
 		return bm_service.getBenchmarksOnDates(year);
 	} 
