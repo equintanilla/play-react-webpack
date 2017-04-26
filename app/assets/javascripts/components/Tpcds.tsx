@@ -5,7 +5,7 @@ import BenchmarkService from "../services/benchmark_service";
 import SERVICE_IDENTIFIER from "../constants/identifiers";
 
 import { BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
-   function shortDate(date:string,row){
+   function shortDate(date:string,row:any){
        
        return new Date(date).toISOString().slice(0, 10);
        }
@@ -33,12 +33,12 @@ export class TPCDS extends React.Component<any,any>{
     
     componentDidMount(){
         this.setState({loading: true}) 
-        this.getBenchMarks().then(res=>{
-            let all_wl = res.data.map(a => a.workloads.map(wl => wl.name))
+        this.getBenchMarks().then((res: any)=>{
+            let all_wl = res.data.map((a: any) => a.workloads.map((wl: any) => wl.name))
             let load_names = uniq(flatten(all_wl))
             console.log(load_names)
             
-            let mod_data  = res.data.map(row =>{ row.workloads.map(workload => workload.metrics.map(metric => { row[metric.name+workload.name] = metric.value}))
+            let mod_data  = res.data.map((row:any) =>{ row.workloads.map((workload: any) => workload.metrics.map((metric: any) => { row[metric.name+workload.name] = metric.value}))
             return row
             });
             console.log("first data:")

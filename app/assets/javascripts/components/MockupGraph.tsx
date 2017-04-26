@@ -8,31 +8,10 @@ import {LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'rec
 import MockupLabelAsPoint from './MockupLabelAsPoint';
 import {MetricTable} from './MetricTable';
 
-const cluster_mock_data ={
-                        "master": {
-                                    "ip": "x.x.x.m",
-                                    "hostname": "abc",
-                                    "vcpus": 4,
-                                    "ram": "xxGB"
-                        },
-                        "slaves": [
-                                    {
-                                                "ip": "x.x.x.s1",
-                                                "hostname": "abc",
-                                                "vcpus": 4,
-                                                "ram": "xxGB"
-                                    },
-                                    {
-                                                "ip": "x.x.x.s2",
-                                                "hostname": "abc",
-                                                "vcpus": 4,
-                                                "ram": "xxGB"
-                                    }
-                        ]
-            }
+
 export const Loader = () => <div className="loader">Loading...</div>
 export class MockupGraph extends React.Component<any,any>{
-	propTypes :{
+	static childPropsTypes = {
 		setGraphData: React.PropTypes.func,
 	}
 	constructor(props:any){
@@ -49,11 +28,11 @@ export class MockupGraph extends React.Component<any,any>{
 		return bm_service.getBenchmarksForDates(startDate,endDate,queryName);
 	}
 	
-	formatDate(date){
+	formatDate(date:any){
 		var d = new Date(date); 
-		var year = d.getFullYear();
-		var month = d.getMonth()+1;
-		var dt = d.getDate();
+		var year:any = d.getFullYear();
+		var month:any = d.getMonth()+1;
+		var dt:any = d.getDate();
 
 		if (dt < 10) {
 		  dt = '0' + dt;
@@ -65,15 +44,15 @@ export class MockupGraph extends React.Component<any,any>{
 		return year + '/' + month + '/' + dt;
 	} 
 	
-	getDateFromMomentObj(startDate, endDate){
-		var startMonth = parseInt(startDate.month())+1;
-		var endMonth = parseInt(endDate.month())+1;
+	getDateFromMomentObj(startDate:any, endDate:any){
+		var startMonth:any = parseInt(startDate.month())+1;
+		var endMonth:any = parseInt(endDate.month())+1;
 
 		startMonth = startMonth < 10 ? '0'+startMonth : startMonth;
 		endMonth = endMonth < 10 ? '0' + endMonth : endMonth;
 		
-		var startDay = startDate.date() < 10 ? '0'+startDate.date() : startDate.date();
-		var endDay = endDate.date() < 10 ? '0'+endDate.date() : endDate.date();
+		var startDay:any = startDate.date() < 10 ? '0'+startDate.date() : startDate.date();
+		var endDay:any = endDate.date() < 10 ? '0'+endDate.date() : endDate.date();
 		
 		return [startDate.year()+ "-"+ startMonth + "-" + startDay, endDate.year()+ "-"+ endMonth+ "-" + endDay];
 	}
@@ -87,21 +66,21 @@ export class MockupGraph extends React.Component<any,any>{
 			return;
 		}
 		this.setState({loading: true}) 		
-		let series: any[] = [];
+		let series: Array<any> = [];
 		var returnedDate = this.getDateFromMomentObj(startDate,endDate);
-		this.getBenchMarksForDates(returnedDate[0],returnedDate[1],queryName).then(res=>{		
-			let all_dates = res.data.map(benchmark=>{ return this.formatDate(benchmark.date)});
+		this.getBenchMarksForDates(returnedDate[0],returnedDate[1],queryName).then((res:any)=>{		
+			let all_dates = res.data.map((benchmark:any)=>{ return this.formatDate(benchmark.date)});
 			let x_Axis_labels = uniq(flatten(all_dates));
-			let metric_names = uniq(flatten(res.data.map(benchmark=>benchmark.workloads.metrics.map(metrics=>metrics.name))));
+			let metric_names = uniq(flatten(res.data.map((benchmark:any)=>benchmark.workloads.metrics.map((metrics:any)=>metrics.name))));
 			let that = this;
-			var series =[];
+
 			x_Axis_labels.forEach(function(date){
-				var d = {};
+				var d: any = {};
 				d["date"] = date;
 				metric_names.forEach(function(names){
-					res.data.forEach(function(benchmark){
+					res.data.forEach(function(benchmark:any){
 						if((that.formatDate(benchmark.date) == date)){
-								benchmark.workloads.metrics.map(metric=>{ d[metric.name]=parseFloat((metric.value).toFixed(2)); d['cluster_info']=cluster_mock_data})
+								benchmark.workloads.metrics.map((metric: any)=>{ d[metric.name]=parseFloat((metric.value).toFixed(2)); d['cluster_info']=benchmark.cluster_info;d['spark_params']=benchmark.spark_params})
 						} 								  
 					});	
 						
