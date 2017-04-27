@@ -7,9 +7,8 @@ import 'bootstrap/dist/css/bootstrap.css';
 import {LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts';
 import MockupLabelAsPoint from './MockupLabelAsPoint';
 import {MetricTable} from './MetricTable';
+import Loader from "./Loader";
 
-
-export const Loader = () => <div className="loader">Loading...</div>
 export class MockupGraph extends React.Component<any,any>{
 	static childPropsTypes = {
 		setGraphData: React.PropTypes.func,

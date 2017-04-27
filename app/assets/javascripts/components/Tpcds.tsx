@@ -3,6 +3,7 @@ import {flatten,uniq} from 'lodash';
 import container from "../inversify.config";
 import BenchmarkService from "../services/benchmark_service";
 import SERVICE_IDENTIFIER from "../constants/identifiers";
+import Loader from "./Loader";
 
 import { BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
    function shortDate(date:string,row:any){
@@ -10,7 +11,6 @@ import { BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
        return new Date(date).toISOString().slice(0, 10);
        }
        
-export const Loader = () => <div className="loader">Loading...</div>
 
 export class TPCDS extends React.Component<any,any>{
     

@@ -9,6 +9,7 @@ import * as moment from 'moment';
 import { BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import 'bootstrap/dist/css/bootstrap.css';
 import Collapsible from 'react-collapsible';
+import MessageBox from './MessageBox'
 
 export class Tab extends React.Component <any,any>{
   render() {
@@ -112,8 +113,8 @@ export class Mockup extends React.Component <any,any>{
 		var spark_data:Array<any> =[];
 		this.state.graphData.map((obj:any)=>{ if(obj.date === date) 
 			{
-				cluster_data.push(obj.cluster_info)
-				spark_data.push(obj.spark_params)
+				typeof(obj.cluster_info) != "undefined" ? cluster_data.push(obj.cluster_info) : null
+				typeof(obj.spark_params) != "undefined" ? spark_data.push(obj.spark_params) : null
 				this.setState({cluster_info:cluster_data})
 				this.setState({spark_params:spark_data})
 			}
@@ -236,7 +237,7 @@ export class Mockup extends React.Component <any,any>{
 												<TableHeaderColumn  dataField='driver_memoryOverhead' >Driver Memory Overhead</TableHeaderColumn>	
 											</BootstrapTable>
 							</div>: null}
-							{this.state.graphData.length == 0 ? <p> No data </p>: this.state.selectedDateIndex == null ? <p>No date Selected</p>:null}
+							{(this.state.graphData.length == 0 || (this.state.selectedDateIndex != null && (this.state.cluster_info.length == 0 || this.state.spark_params.length == 0 )) )? <MessageBox message="No Data" /> : this.state.selectedDateIndex == null ? <MessageBox message="No Date Selected" /> : null}
 					  </div>
 					</Collapsible>					  
 				  <br/>
@@ -246,7 +247,7 @@ export class Mockup extends React.Component <any,any>{
 								return <MockupGraph key={i} queryName={name} startDate={this.state.graphParamStartDate} endDate={this.state.graphParamEndDate} setGraphData={this.setGraphData.bind(this)}/>
 							})
 						}
-						{this.state.graphData.length == 0 ? <p> No Data </p>:null}
+						{this.state.graphData.length == 0 ? <MessageBox message="No Data" />:null}
 			   </div>
 		   </div>
 	   );

@@ -7,8 +7,8 @@ import 'bootstrap/dist/css/bootstrap.css';
 import {LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts';
 import LabelAsPoint from './LabelAsPoint';
 import {MetricTable} from './MetricTable';
+import Loader from "./Loader";
 
-export const Loader = () => <div className="loader">Loading...</div>
 export class Graph extends React.Component<any,any>{
 	constructor(props:any){
         super(props)       

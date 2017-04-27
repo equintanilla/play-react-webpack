@@ -30,11 +30,11 @@ class TheApp extends React.Component<any,any>{
         <ul className="topNav">        
         <li> <NavLink to="/app/rawdata" activeClassName="active" >Raw data</NavLink> </li>
         <li> <NavLink to="/app/graph" activeClassName="active" >Graph</NavLink> </li> 
-		<li> <NavLink to="/app/mockup" activeClassName="active" >Tpcds</NavLink> </li>  		
+		<li> <NavLink to="/app/tpcds" activeClassName="active" >Tpcds</NavLink> </li>  		
         </ul>               
                 <Route path="/app/rawdata" component={TPCDS}/>              
                 <Route path="/app/graph" component={Graph}/>  
-				<Route path="/app/mockup" component={Mockup}/> 
+				<Route path="/app/tpcds" component={Mockup}/> 
         </div>
         </BrowserRouter>);
         }
