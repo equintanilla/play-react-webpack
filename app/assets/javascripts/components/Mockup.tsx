@@ -237,8 +237,19 @@ export class Mockup extends React.Component <any,any>{
 												<TableHeaderColumn  dataField='driver_memoryOverhead' >Driver Memory Overhead</TableHeaderColumn>	
 											</BootstrapTable>
 							</div>: null}
-							{(this.state.graphData.length == 0 || (this.state.selectedDateIndex != null && (this.state.cluster_info.length == 0 || this.state.spark_params.length == 0 )) )? <MessageBox message="No Data" /> : this.state.selectedDateIndex == null ? <MessageBox message="No Date Selected" /> : null}
-					  </div>
+					  
+								{this.state.graphData.length == 0 ?
+									<MessageBox message="No Data" />
+									:(this.state.selectedDateIndex != null && (this.state.cluster_info.length == 0 && this.state.spark_params.length == 0))?
+									<MessageBox message="No Data" />
+									:(this.state.selectedDateIndex != null && this.state.spark_params.length == 0)?
+									<MessageBox message="No Spark Params" />
+									:(this.state.selectedDateIndex != null && this.state.cluster_info.length == 0)?
+									<MessageBox message="No Cluster Info" />
+									:(this.state.selectedDateIndex == null) ?
+									<MessageBox message="No Date Selected" />
+									:null}
+					</div>
 					</Collapsible>					  
 				  <br/>
 				  <br/>
