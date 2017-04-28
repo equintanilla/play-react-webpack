@@ -21,6 +21,7 @@ export class MockupGraph extends React.Component<any,any>{
         };
     }
 	
+	/* Invoke API call to fetch benchmark data for specific dates and query name */
 	getBenchMarksForDates(startDate:any, endDate:any, queryName:any){
 		let bm_service = container.get<BenchmarkService>(SERVICE_IDENTIFIER.BM_SERVICE);
 		return bm_service.getBenchmarksForDates(startDate,endDate,queryName);
@@ -41,6 +42,7 @@ export class MockupGraph extends React.Component<any,any>{
 
 		return year + '/' + month + '/' + dt;
 	}
+	
 	formatDateDDMMYY(date:any){
 		var d = new Date(date); 
 		var year:any = d.getFullYear();
@@ -75,6 +77,12 @@ export class MockupGraph extends React.Component<any,any>{
 		this.getGraphData(this.props.startDate, this.props.endDate, this.props.queryName)					
     }	
 	
+	/* Generate x and y coordinates for graph
+	** Dates are plotted on X axis, metric values on Y axis
+	** data var is array of objects contaning unique dates,metric names and their values,
+	** cluster_info,spark_params, branch, git_url, last_commit
+	** Only dates and metric values are used to plot graphs
+	*/
 	getGraphData(startDate:object, endDate:object, queryName:string){
 		if(startDate == null && endDate == null){
 			return;

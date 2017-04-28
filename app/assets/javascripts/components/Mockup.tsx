@@ -31,16 +31,16 @@ export class Mockup extends React.Component <any,any>{
         super(props)      
 		this.state ={
 			selectedTabId : 0,
-			query_names: ["q1-v1.4", "q2-v1.4", "q3-v1.4", "q4-v1.4", "q5-v1.4", "q6-v1.4", "q7-v1.4", "q8-v1.4", "q9-v1.4", "q10-v1.4"],
-			startDate: null,
-			endDate: null,
+			query_names: ["q1-v1.4", "q2-v1.4", "q3-v1.4", "q4-v1.4", "q5-v1.4", "q6-v1.4", "q7-v1.4", "q8-v1.4", "q9-v1.4", "q10-v1.4"], /*Initial queries to display*/
+			startDate: null,  /*Date picker start date*/
+			endDate: null,    /*Date picker end date*/
 			focusedInput: null,
-			dateFormat: 'DD/MM/YYYY',
+			dateFormat: 'DD/MM/YYYY', /* date picker date format*/
 			graphParamStartDate:null,
 			graphParamEndDate:null,
-			graphData:[],
-			cluster_info:[],
-			spark_params:[],
+			graphData:[],    /* array of objects containing - date,cluster_info,spark_params,branch,git_url,last_commit*/
+			cluster_info:[], /*holds cluster_info for selected date*/
+			spark_params:[], /*holds spark_params for selected date*/
 			selectedDateIndex:null,
 			branch_name:'',
 			last_commit:'',
@@ -52,6 +52,10 @@ export class Mockup extends React.Component <any,any>{
 		return this.state.selectedTabId === id;
 	} 
 	
+	/*recompute query names,
+	**clears graph_date,cluster_info,spark_params,selectedDateIndex
+	*sets selected left nav tab active
+	*/
 	setActiveTab(selectedTabId:number, text:string) {
 		this.setState({ selectedTabId });
 		var q = text.split("-");
@@ -98,6 +102,10 @@ export class Mockup extends React.Component <any,any>{
 		 this.setState({ graphParamEndDate:initialEndDate}) 
 	}
 	
+	/*
+	** clear clsuter_info,spark_params,graphData,selectedDateIndex
+	** set start and end date props for MockupGraph component
+	*/
 	handleApplyBtnClick(){
 		this.setState({cluster_info:[]})
 		this.setState({spark_params:[]})
@@ -109,6 +117,10 @@ export class Mockup extends React.Component <any,any>{
 		this.setState({ graphParamEndDate:endate}) 		
 	}
 	
+	/*
+	** On date click inside accordian, display cluster info,
+	** spark params, branch name, git url, last commit
+	*/
 	handleDateClick(date:any, index:number){		
 		var cluster_data:Array<any> =[];
 		var spark_data:Array<any> =[];
@@ -126,10 +138,16 @@ export class Mockup extends React.Component <any,any>{
 		this.setState({ selectedDateIndex: index });
 	}
 
-	selectableDateRange(date:any, startDate:any, endDate:any) {	 
-		return (date.isSameOrBefore(startDate) || date.isAfter(endDate));
+	/* disable future dates on date picker*/
+	selectableDateRange(date:any, endDate:any) {
+		return (date.isAfter(endDate));
 	}
 	
+	/*
+	** For a range of dates push  benchmark data to graphData var
+	** graphData is array of objects consisting of unique dates(sorted in ascending order),
+	** metric names and their values,cluster_info, spark_params, branch, git_url,last_commit
+	*/
 	setGraphData(graphData:any){
 		var data:Array<any> = this.state.graphData;
 		var found:Array<any> = data.filter(function(obj){
@@ -201,7 +219,7 @@ export class Mockup extends React.Component <any,any>{
 						  focusedInput={this.state.focusedInput}
 						  displayFormat={this.state.dateFormat}
 						  onDatesChange={({ startDate, endDate }) => this.setState({ startDate, endDate })}
-						  isOutsideRange={day => this.selectableDateRange(day, initialStartDate,initialEndDate.clone().add(1, 'day'))}
+						  isOutsideRange={day => this.selectableDateRange(day, initialEndDate.clone().add(1, 'day'))}
 						  onFocusChange={focusedInput => this.setState({ focusedInput })} 
 					/>
 					<button type="button" className="btn-lg btnMargin" onClick={this.handleApplyBtnClick.bind(this)}>Apply</button>
