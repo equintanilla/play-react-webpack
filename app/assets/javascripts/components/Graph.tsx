@@ -3,11 +3,11 @@ import {flatten,uniq} from 'lodash';
 import container from "../inversify.config";
 import BenchmarkService from "../services/benchmark_service";
 import SERVICE_IDENTIFIER from "../constants/identifiers";
-import 'bootstrap/dist/css/bootstrap.css';
 import {LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts';
 import LabelAsPoint from './LabelAsPoint';
 import {MetricTable} from './MetricTable';
 import Loader from "./Loader";
+import 'bootstrap/dist/css/bootstrap.css';
 
 export class Graph extends React.Component<any,any>{
 	constructor(props:any){
@@ -97,7 +97,7 @@ export class Graph extends React.Component<any,any>{
 			</LineChart>
 			<p className="querNameAlign">{this.props.queryname}</p>
 			<br/><br/>	
-			<MetricTable data={this.state.benchmark_date_json} metric_names={this.state.col_names} />			
+			<MetricTable data={this.state.benchmark_date_json} col_names={this.state.col_names} />			
 			</div>
 	  );
 	}
