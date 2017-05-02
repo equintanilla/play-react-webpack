@@ -158,7 +158,7 @@ export class Mockup extends React.Component <any,any>{
 			data.sort(function(a,b){
 				a = new Date(parseInt(a.date))
 				b = new Date(parseInt(b.date))
-				return a-b;
+				return b-a;
 				})
 			this.setState({graphData:data});
 		}			
