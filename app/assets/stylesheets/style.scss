@@ -101,6 +101,8 @@ div.tab button.active {
     color: #333;
     border-radius: 4px;
 	text-decoration: none;
+	display: inline-block;
+	margin-bottom: 5px;
 }
 a.dateLink:hover {
     text-decoration: none;
