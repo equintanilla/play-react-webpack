@@ -13,6 +13,7 @@ case class Tpcds(name: String,
                  git_url: String,
                  last_commit: String,
                  branch: String,
+                 tag: String,
                  date: DateTime,
                  master: String,
                  workloads: Seq[Workload])
