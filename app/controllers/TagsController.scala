@@ -26,11 +26,9 @@ class TagsController @Inject() (val mongoApi: ReactiveMongoApi ) extends Control
 
   def getBenchmarkTags(tagPattern:String ) = Action.async {
     log.info("Fetching tags with pattern: " + tagPattern)
+    //val reader = 
     val a = collection.flatMap({ 
-      _.find(Json.obj("tag" -> Json.obj("$regex" -> JsString(tagPattern))))
-        .projection(Json.obj("_id" -> 0, "tag" -> 1))
-        .cursor[JsObject]()
-        .collect(-1, Cursor.FailOnError[List[JsObject]]())
+      _.distinct[String,Set]("tag",Option(Json.obj("tag" -> Json.obj("$regex" -> JsString(tagPattern)))))
     })
             
     a.map(x => Ok(Json.toJson(x)))
