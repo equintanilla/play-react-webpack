@@ -118,14 +118,14 @@ export class Mockup extends React.Component <any,any>{
 	}
 	
 	/*
-	** On date click inside accordian, display cluster info,
+	** On tag [date] click inside accordian, display cluster info,
 	** spark params, branch name, git url, last commit
 	*/
-	handleDateClick(date:any, index:number){		
+	handleDateClick(tag_date:any, index:number){		
 		var cluster_data:Array<any> =[];
 		var spark_data:Array<any> =[];
 		this.state.graphData.map((obj:any)=>{ 
-			if(obj.date === date) {
+			if(obj.tag_date === tag_date) {
 				typeof(obj.cluster_info) != "undefined" ? cluster_data.push(obj.cluster_info) : null
 				typeof(obj.spark_params) != "undefined" ? spark_data.push(obj.spark_params) : null
 				this.setState({branch_name: obj.branch})
@@ -151,15 +151,15 @@ export class Mockup extends React.Component <any,any>{
 	setGraphData(graphData:any){
 		var data:Array<any> = this.state.graphData;
 		var found:Array<any> = data.filter(function(obj){
-			return obj.date == graphData.date
+			return obj.tag_date == graphData.tag_date
 		})
 		if(found.length == 0){
 			data.push(graphData);
 			data.sort(function(a,b){
-				a = new Date(parseInt(a.date))
-				b = new Date(parseInt(b.date))
-				return b-a;
-				})
+			      a = a.date.split('/');
+				  b = b.date.split('/');
+				return b[2] - a[2] || b[1] - a[1] || b[0] - a[0];
+			})
 			this.setState({graphData:data});
 		}			
 	}
@@ -229,7 +229,7 @@ export class Mockup extends React.Component <any,any>{
 						<div>
 							<div>
 							{ this.state.graphData.length != 0 ? this.state.graphData.map((obj:any, i:number)=>{ 
-									return (<a key={i} className = { this.state.selectedDateIndex == i ? "dateLink active" : "dateLink"} onClick={this.handleDateClick.bind(this,obj.date,i)}>{obj.date}</a>)})
+									return (<a key={i} className = { this.state.selectedDateIndex == i ? "dateLink active" : "dateLink"} onClick={this.handleDateClick.bind(this,obj.tag_date,i)}>{obj.tag_date}</a>)})
 							  : null }
 							</div>
 							<br/>
@@ -292,7 +292,7 @@ export class Mockup extends React.Component <any,any>{
 									:(this.state.selectedDateIndex != null && this.state.cluster_info.length == 0)?
 									<MessageBox message = "No Cluster Info" />
 									:(this.state.selectedDateIndex == null) ?
-									<MessageBox message = "No Date Selected" />
+									<MessageBox message = "No Tag Selected" />
 									: null }
 						</div>
 					</Collapsible>					  

@@ -1,5 +1,5 @@
 import * as  React from 'react';
-import {flatten,uniq} from 'lodash';
+import {flatten,uniq,uniqBy} from 'lodash';
 import container from "../inversify.config";
 import BenchmarkService from "../services/benchmark_service";
 import SERVICE_IDENTIFIER from "../constants/identifiers";
@@ -90,32 +90,48 @@ export class MockupGraph extends React.Component<any,any>{
 		this.setState({loading: true}) 		
 		let series: Array<any> = [];
 		var date_range = this.getDateFromMomentObj(startDate, endDate);
-		this.getBenchMarksForDates(date_range[0], date_range[1], queryName).then((res:any)=>{		
-			let all_dates = res.data.map((benchmark:any)=>{ return this.formatDateYYMMDD(benchmark.date)});
-			let x_Axis_labels = (uniq(flatten(all_dates))).sort();
+		this.getBenchMarksForDates(date_range[0], date_range[1], queryName).then((res:any)=>{			
+			let all_tags_dates = res.data.map((benchmark:any)=>{ return [benchmark.tag,this.formatDateYYMMDD(benchmark.date)]});
+			
+			let tags_dates: Array<any> =[];
+			all_tags_dates.forEach(function(elem:any){
+				var found = tags_dates.filter(function(arr){ 
+					return ((arr[0] == elem[0]) && (arr[1] == elem[1])) 
+				}); 
+				if(found.length ==0){ 
+					tags_dates.push(elem)
+				} 
+				
+			})
+			
 			let metric_names = uniq(flatten(res.data.map((benchmark:any)=>benchmark.workloads.metrics.map((metrics:any)=>metrics.name))));
 			let that = this;
 
-			x_Axis_labels.forEach(function(date){
-				var data_obj: any = {};
-				data_obj["date"] = that.formatDateDDMMYY(date);
-				metric_names.forEach(function(names){
-					res.data.forEach(function(benchmark:any){
-						if((that.formatDateYYMMDD(benchmark.date) == date)){
-								benchmark.workloads.metrics.map((metric: any)=>{ 
-									data_obj[metric.name] = parseFloat((metric.value).toFixed(2));
-									data_obj['cluster_info'] = benchmark.cluster_info;
-									data_obj['spark_params'] = benchmark.spark_params;
-									data_obj['last_commit'] = typeof(benchmark.last_commit) != 'undefined' ? benchmark.last_commit : "";
-									data_obj['branch'] = typeof(benchmark.branch) != 'undefined' ? benchmark.branch : "";
-									data_obj['git_url'] = typeof(benchmark.git_url) != 'undefined' ? benchmark.git_url : "";
-								})
-						} 								  
-					});							
-				});
+			tags_dates.map((tags_dates_array:any)=>{
+				var data_obj: any = {};			  				
+				res.data.forEach(function(benchmark:any){				
+					if((benchmark.tag == tags_dates_array[0] && that.formatDateYYMMDD(benchmark.date) == tags_dates_array[1])){
+							benchmark.workloads.metrics.map((metric: any)=>{ 
+								data_obj[metric.name] = parseFloat((metric.value).toFixed(2));
+								data_obj['cluster_info'] = benchmark.cluster_info;
+								data_obj['spark_params'] = benchmark.spark_params;
+								data_obj['last_commit'] = typeof(benchmark.last_commit) != 'undefined' ? benchmark.last_commit : "";
+								data_obj['branch'] = typeof(benchmark.branch) != 'undefined' ? benchmark.branch : "";
+								data_obj['git_url'] = typeof(benchmark.git_url) != 'undefined' ? benchmark.git_url : "";									
+								data_obj["date"] = that.formatDateDDMMYY(benchmark.date);
+								data_obj["tag_date"] = tags_dates_array[0] + "[" + that.formatDateDDMMYY(benchmark.date) + "]";
+							})						
+					} 								  
+				});													
 				series.push(data_obj);	
 				that.props.setGraphData(data_obj)				
-			}); 	
+			}); 
+			series.sort(function(a,b){
+			      a = a.date.split('/');
+				  b = b.date.split('/');
+				return a[2] - b[2] || a[1] - b[1] || a[0] - b[0];
+			})		
+			
 			this.setState({data:series});
 			this.setState({metric_names: metric_names});			
 			this.setState({loading: false});
@@ -145,7 +161,7 @@ export class MockupGraph extends React.Component<any,any>{
 		return (
 				<div  className="chartAlign"> 							
 					<LineChart width = {450} height = {250} data = {this.state.data} >
-						<XAxis dataKey = "date"/>
+						<XAxis dataKey = "tag_date"/>
 						<YAxis/>
 						<CartesianGrid strokeDasharray = "3 3"/>
 						<Tooltip/>
