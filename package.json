@@ -39,8 +39,8 @@
     "recharts": "^0.21.2",
     "reflect-metadata": "^0.1.10",
     "url-loader": "^0.5.8",
-	"@types/moment":"2.13.0",
-    "@types/react-dates":"10.0.0",
+	"moment":"2.18.1",
+    "react-dates":"12.0.0",	
     "react-addons-shallow-compare":"15.5.2",
 	"react-collapsible":"1.4.0"
   },
