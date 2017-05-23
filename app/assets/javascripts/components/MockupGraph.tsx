@@ -3,7 +3,7 @@ import {flatten,uniq,uniqBy} from 'lodash';
 import container from "../inversify.config";
 import BenchmarkService from "../services/benchmark_service";
 import SERVICE_IDENTIFIER from "../constants/identifiers";
-import {LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts';
+import {LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceLine} from 'recharts';
 import MockupLabelAsPoint from './MockupLabelAsPoint';
 import Loader from "./Loader";
 import 'bootstrap/dist/css/bootstrap.css';
@@ -17,7 +17,8 @@ export class MockupGraph extends React.Component<any,any>{
         this.state = {
             data : [],
 			loading: true,
-			metric_names:[]		
+			metric_names:["avgTimeMs","stdDev"],
+			lowestValue: 0
         };
     }
 	
@@ -103,10 +104,8 @@ export class MockupGraph extends React.Component<any,any>{
 				} 
 				
 			})
-			
-			let metric_names = uniq(flatten(res.data.map((benchmark:any)=>benchmark.workloads.metrics.map((metrics:any)=>metrics.name))));
-			let that = this;
 
+			let that = this;
 			tags_dates.map((tags_dates_array:any)=>{
 				var data_obj: any = {};			  				
 				res.data.forEach(function(benchmark:any){				
@@ -120,23 +119,44 @@ export class MockupGraph extends React.Component<any,any>{
 								data_obj['git_url'] = typeof(benchmark.git_url) != 'undefined' ? benchmark.git_url : "";									
 								data_obj["date"] = that.formatDateDDMMYY(benchmark.date);
 								data_obj["tag_date"] = tags_dates_array[0] + "[" + that.formatDateDDMMYY(benchmark.date) + "]";
+								data_obj["tag"] = tags_dates_array[0];
 							})						
 					} 								  
 				});													
 				series.push(data_obj);	
 				that.props.setGraphData(data_obj)				
 			}); 
+
 			series.sort(function(a,b){
-			      a = a.date.split('/');
-				  b = b.date.split('/');
-				return a[2] - b[2] || a[1] - b[1] || a[0] - b[0];
+			  var tag1 = a.tag.split("-");
+			  var tag2 = b.tag.split("-")
+			  var tag1_part1 = parseInt(tag1[0].replace(/[^0-9]/g, ""), 10);
+			  var tag2_part1 = parseInt(tag2[0].replace(/[^0-9]/g, ""), 10);
+			  if(tag1_part1 == tag2_part1){
+				  var tag1_part2 = parseInt(tag1[1].replace(/[^0-9]/g, ""), 10);
+				  var tag2_part2 = parseInt(tag2[1].replace(/[^0-9]/g, ""), 10);
+				  if(tag1_part2 == tag2_part2){
+					var j = a.date.split('/');
+					var k = b.date.split('/');
+					return j[2] - k[2] || j[1] - k[1] || j[0] - k[0];
+				  }else{
+					return tag1_part2 > tag2_part2 ? 1:-1;
+				  }
+			  
+			  }else{
+				return tag1_part1 > tag2_part1 ? 1:-1
+			  }
+			  
 			})		
-			
 			this.setState({data:series});
-			this.setState({metric_names: metric_names});			
+			if(this.state.data.length >0){
+				var lowestavgTime = Math.min.apply(Math, this.state.data.map(function(item:any) {
+					return item['avgTimeMs'];
+				}))
+				this.setState({lowestValue:lowestavgTime})
+			}		
 			this.setState({loading: false});
-		});
-							
+		});		
 	}
 		
 	componentWillReceiveProps(nextProps:any) {		
@@ -157,7 +177,7 @@ export class MockupGraph extends React.Component<any,any>{
             return (<Loader/>)
         }
 		var i = 0;
-		var strokes_fill = ["#8884d8","#ff7300","#82ca9d","#8884d8"];
+		var strokes_fill = ["#8884d8","#ff7300","#82ca9d","#8884d8"];		
 		return (
 				<div  className="chartAlign"> 							
 					<LineChart width = {450} height = {250} data = {this.state.data} >
@@ -166,10 +186,11 @@ export class MockupGraph extends React.Component<any,any>{
 						<CartesianGrid strokeDasharray = "3 3"/>
 						<Tooltip/>
 						<Legend />
+						<ReferenceLine y={this.state.lowestValue} stroke="red" />
 						{	
 							this.state.metric_names.map((names:string) => {
 								{i++}
-								return (<Line key = {`line_{names}`} stroke = {strokes_fill[i]} dataKey = {names} activeDot = {false} label = {<MockupLabelAsPoint  />} strokeWidth = {4}  />)
+								return (<Line key = {`line_{names}`} stroke = {strokes_fill[i]} dataKey = {names} activeDot = {true}  strokeWidth = {4} />)
 							})		
 						}
 					</LineChart>				

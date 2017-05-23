@@ -153,12 +153,28 @@ export class Mockup extends React.Component <any,any>{
 		var found:Array<any> = data.filter(function(obj){
 			return obj.tag_date == graphData.tag_date
 		})
+
 		if(found.length == 0){
 			data.push(graphData);
 			data.sort(function(a,b){
-			      a = a.date.split('/');
-				  b = b.date.split('/');
-				return b[2] - a[2] || b[1] - a[1] || b[0] - a[0];
+			  var tag1 = a.tag.split("-");
+			  var tag2 = b.tag.split("-")
+			  var tag1_part1 = parseInt(tag1[0].replace(/[^0-9]/g, ""), 10);
+			  var tag2_part1 = parseInt(tag2[0].replace(/[^0-9]/g, ""), 10);
+			  if(tag1_part1 == tag2_part1){
+				  var tag1_part2 = parseInt(tag1[1].replace(/[^0-9]/g, ""), 10);
+				  var tag2_part2 = parseInt(tag2[1].replace(/[^0-9]/g, ""), 10);
+				  if(tag1_part2 == tag2_part2){
+					var j = a.date.split('/');
+					var k = b.date.split('/');
+					return k[2] - j[2] || k[1] - j[1] || k[0] - j[0];
+				  }else{
+					return tag1_part2 > tag2_part2 ? -1:1;
+				  }
+			  
+			  }else{
+				return tag1_part1 > tag2_part1 ? -1:1
+			  }			  
 			})
 			this.setState({graphData:data});
 		}			
