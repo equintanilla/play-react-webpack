@@ -73,7 +73,7 @@ div.tab button.active {
 }
 .chartAlign{
 	float:left;
-	padding-right:30px;
+	/*padding-right:30px;*/
 }
 .querNameAlign{
 	text-align:center;
@@ -178,4 +178,17 @@ a.dateLink:hover {
 }
 .git_params >label{
 	width:100px;
+}
+.custom-tooltip{
+	margin: 0px; 
+	padding: 10px;
+	background-color: rgb(255, 255, 255); 
+	border: 1px solid rgb(204, 204, 204); 
+	white-space: nowrap;
+}
+.color82ca9d{
+	color:#82ca9d
+}
+.colorff7300{
+	color:#ff7300
 }
