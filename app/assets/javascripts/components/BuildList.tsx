@@ -2,6 +2,25 @@ import * as React from 'react';
 import container from "../inversify.config";
 import BuildService from "../services/build_service";
 import SERVICE_IDENTIFIER from "../constants/identifiers";
+import { BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
+
+
+class URLFormatter extends React.Component<any,any> {
+  render() {
+    return (
+      <a href={ this.props.url } target="_blank">
+        {this.props.url}
+       </a>
+    );
+  }
+}
+
+function urlFormatter(cell:any, row:any) {
+  return (
+    <URLFormatter url={ cell } />
+  );
+}
+
 
 export class BuildList extends React.Component<any,any>{
 
@@ -19,16 +38,19 @@ export class BuildList extends React.Component<any,any>{
   }
 
   render(){
-    console.log(this.state.data);
+    //console.log(this.state.data);
+    //console.log("Builds Length is :"+ this.state.data.builds.length);
+    if(this.state.data.builds.length == 0){
+      return(<div>No builds found</div>);
+    }
+
     return(<div>
-      <ul>
-        {
-          this.state.data.builds.map((build:any) =>
-          {
-            return(<li key={build.tag}><a  href={build.url} target="_blank" >{build.url}</a></li>);
-          }
-        }
-        </ul></div>)
+      <BootstrapTable data={this.state.data.builds} keyField="tag" striped hover>
+        <TableHeaderColumn  dataField="date" >Build Date </TableHeaderColumn>
+        <TableHeaderColumn  dataField="tag" >Build Tag </TableHeaderColumn>
+        <TableHeaderColumn  dataField="url" dataFormat={urlFormatter} >URL </TableHeaderColumn>
+      </BootstrapTable>
+    </div>)
   }
 
   componentDidMount(){
