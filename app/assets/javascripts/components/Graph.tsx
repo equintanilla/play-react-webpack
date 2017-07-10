@@ -11,7 +11,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 
 export class Graph extends React.Component<any,any>{
 	constructor(props:any){
-        super(props)       
+        super(props)
         this.state = {
             data : {},
 			loading: true,
@@ -25,7 +25,7 @@ export class Graph extends React.Component<any,any>{
 		return bm_service.getBenchmarksGraphs();
 	}
 	formatDate(date:any){
-		var d = new Date(date); 
+		var d = new Date(date);
 		var year:any = d.getFullYear();
 		var month:any = d.getMonth()+1;
 		var dt:any = d.getDate();
@@ -38,18 +38,18 @@ export class Graph extends React.Component<any,any>{
 		}
 
 		return year + '/' + month + '/' + dt;
-	}   
+	}
     componentDidMount(){
-		this.setState({loading: true}) 
+		this.setState({loading: true})
 		let series: Array<any> = [];
-        this.setState({loading: true}) 
+        this.setState({loading: true})
         this.getBenchMarks().then((res:any)=>{
-			
+
 		let all_date = res.data.map((metric:any)=>{ return this.formatDate(metric._id.date)});
 		let x_Axis_labels = uniq(flatten(all_date));
 		let metric_names = uniq(flatten(res.data.map((metric:any)=>metric._id.name)));
 		let that = this;
-		
+
 		x_Axis_labels.forEach(function(date:any){
 			var d: any = {};
 			d["name"] = date;
@@ -57,21 +57,21 @@ export class Graph extends React.Component<any,any>{
 				res.data.forEach(function(metric: any){
 					if((that.formatDate(metric._id.date) == date)){
 							d[metric._id.name] = metric.average;
-					} 								  
-				});	
-					
+					}
+				});
+
 			});
-			series.push(d);			
-		}); 		
+			series.push(d);
+		});
 			this.setState({data:series});
 			this.setState({metric_names: metric_names});
-			this.setState({loading: false});			
+			this.setState({loading: false});
 		});
     }
 	handleClickFunc(table_data:Array<any>){
 		this.setState({benchmark_date_json:table_data});
 	}
-	
+
 	render(){
 		if(this.state.loading){
             return (<Loader/>)
@@ -80,24 +80,24 @@ export class Graph extends React.Component<any,any>{
 		var strokes_fill = ["#8884d8","#ff7300","#82ca9d","#8884d8"];
 		return (
 			<div className="chartAlign">
-			<h1>Spark Performance Benchmark trend</h1> 
-			<br/>							
+			<h1>Spark Performance Benchmark trend</h1>
+			<br/>
 			<LineChart width = {600} height = {300} data = {this.state.data}>
 				<XAxis dataKey = "name"/>
 				<YAxis/>
 				<CartesianGrid strokeDasharray = "3 3"/>
 				<Tooltip/>
 				<Legend />
-				{	
+				{
 					this.state.metric_names.map((names:string) => {
 						{i++}
 						return (<Line key = {`line_{names}`} stroke = {strokes_fill[i]} dataKey = {names} activeDot = {false} label = {<LabelAsPoint getTableData={this.handleClickFunc.bind(this)} />} strokeWidth = {4}  />)
-					})		
+					})
 				}
 			</LineChart>
 			<p className="querNameAlign">{this.props.queryname}</p>
-			<br/><br/>	
-			<MetricTable data={this.state.benchmark_date_json} col_names={this.state.col_names} />			
+			<br/><br/>
+			<MetricTable data={this.state.benchmark_date_json} col_names={this.state.col_names} />
 			</div>
 	  );
 	}

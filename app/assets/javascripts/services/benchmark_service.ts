@@ -1,5 +1,5 @@
 interface BenchmarkService{
-    getBenchmarks():any;
+  getBenchmarks():any;
 	getBenchmarksGraphs():any;
 	getBenchmarksOnDates(date:any):any;
 	getBenchmarksForDates(startDate:any,endDate:any,queryName:any):any;

@@ -8,185 +8,61 @@ import MockupLabelAsPoint from './MockupLabelAsPoint';
 import Loader from "./Loader";
 import 'bootstrap/dist/css/bootstrap.css';
 
-export class MockupGraph extends React.Component<any,any>{
+class CustomTooltip extends React.Component<any,any>{
 	static childPropsTypes = {
-		setGraphData: React.PropTypes.func,
+       type: React.PropTypes.string,
+	   payload: React.PropTypes.array,
+	   label: React.PropTypes.string	
 	}
+	render() {
+    const { active } = this.props;
+
+    if (active) {
+      const { baselineVal, payload, label } = this.props;
+	  let avgTimeMs = (payload[0].value - baselineVal).toFixed(2)
+	  let stdDev = (payload[1].value).toFixed(2)
+      return (
+			<div className="recharts-default-tooltip custom-tooltip">
+			 <p className="recharts-tooltip-label" >{`${label}`} </p>
+			 <p className="colorff7300" > avgTimeMs: {`${avgTimeMs}`}, {`${payload[0].value}`}</p>
+			 <p className="color82ca9d"> stdDev: {`${stdDev}`}</p>
+			</div>
+      );
+    }
+
+    return null;
+  }
+}
+
+export class MockupGraph extends React.Component<any,any>{
+	
 	constructor(props:any){
         super(props)       
         this.state = {
-            data : [],
-			loading: true,
-			metric_names:["avgTimeMs","stdDev"],
-			lowestValue: 0
+			metric_names:["avgTimeMs","stdDev"]
         };
     }
 	
-	/* Invoke API call to fetch benchmark data for specific dates and query name */
-	getBenchMarksForDates(startDate:any, endDate:any, queryName:any){
-		let bm_service = container.get<BenchmarkService>(SERVICE_IDENTIFIER.BM_SERVICE);
-		return bm_service.getBenchmarksForDates(startDate,endDate,queryName);
-	}
-	
-	formatDateYYMMDD(date:any){
-		var d = new Date(date); 
-		var year:any = d.getFullYear();
-		var month:any = d.getMonth()+1;
-		var dt:any = d.getDate();
-
-		if (dt < 10) {
-		  dt = '0' + dt;
-		}
-		if (month < 10) {
-		  month = '0' + month;
-		}
-
-		return year + '/' + month + '/' + dt;
-	}
-	
-	formatDateDDMMYY(date:any){
-		var d = new Date(date); 
-		var year:any = d.getFullYear();
-		var month:any = d.getMonth()+1;
-		var dt:any = d.getDate();
-
-		if (dt < 10) {
-		  dt = '0' + dt;
-		}
-		if (month < 10) {
-		  month = '0' + month;
-		}
-
-		return dt + '/' + month + '/' + year;
-	
-	}	
-	
-	getDateFromMomentObj(startDate:any, endDate:any){
-		var startMonth:any = parseInt(startDate.month())+1;
-		var endMonth:any = parseInt(endDate.month())+1;
-
-		startMonth = startMonth < 10 ? '0'+startMonth : startMonth;
-		endMonth = endMonth < 10 ? '0' + endMonth : endMonth;
-		
-		var startDay:any = startDate.date() < 10 ? '0'+startDate.date() : startDate.date();
-		var endDay:any = endDate.date() < 10 ? '0'+endDate.date() : endDate.date();
-		
-		return [startDate.year()+ "-"+ startMonth + "-" + startDay, endDate.year()+ "-"+ endMonth+ "-" + endDay];
-	}
-	
-    componentDidMount(){
-		this.getGraphData(this.props.startDate, this.props.endDate, this.props.queryName)					
-    }	
-	
-	/* Generate x and y coordinates for graph
-	** Dates are plotted on X axis, metric values on Y axis
-	** data var is array of objects contaning unique dates,metric names and their values,
-	** cluster_info,spark_params, branch, git_url, last_commit
-	** Only dates and metric values are used to plot graphs
-	*/
-	getGraphData(startDate:object, endDate:object, queryName:string){
-		if(startDate == null && endDate == null){
-			return;
-		}
-		this.setState({loading: true}) 		
-		let series: Array<any> = [];
-		var date_range = this.getDateFromMomentObj(startDate, endDate);
-		this.getBenchMarksForDates(date_range[0], date_range[1], queryName).then((res:any)=>{			
-			let all_tags_dates = res.data.map((benchmark:any)=>{ return [benchmark.tag,this.formatDateYYMMDD(benchmark.date)]});
-			
-			let tags_dates: Array<any> =[];
-			all_tags_dates.forEach(function(elem:any){
-				var found = tags_dates.filter(function(arr){ 
-					return ((arr[0] == elem[0]) && (arr[1] == elem[1])) 
-				}); 
-				if(found.length ==0){ 
-					tags_dates.push(elem)
-				} 
-				
-			})
-
-			let that = this;
-			tags_dates.map((tags_dates_array:any)=>{
-				var data_obj: any = {};			  				
-				res.data.forEach(function(benchmark:any){				
-					if((benchmark.tag == tags_dates_array[0] && that.formatDateYYMMDD(benchmark.date) == tags_dates_array[1])){
-							benchmark.workloads.metrics.map((metric: any)=>{ 
-								data_obj[metric.name] = parseFloat((metric.value).toFixed(2));
-								data_obj['cluster_info'] = benchmark.cluster_info;
-								data_obj['spark_params'] = benchmark.spark_params;
-								data_obj['last_commit'] = typeof(benchmark.last_commit) != 'undefined' ? benchmark.last_commit : "";
-								data_obj['branch'] = typeof(benchmark.branch) != 'undefined' ? benchmark.branch : "";
-								data_obj['git_url'] = typeof(benchmark.git_url) != 'undefined' ? benchmark.git_url : "";									
-								data_obj["date"] = that.formatDateDDMMYY(benchmark.date);
-								data_obj["tag_date"] = tags_dates_array[0] + "[" + that.formatDateDDMMYY(benchmark.date) + "]";
-								data_obj["tag"] = tags_dates_array[0];
-							})						
-					} 								  
-				});													
-				series.push(data_obj);	
-				that.props.setGraphData(data_obj)				
-			}); 
-
-			series.sort(function(a,b){
-			  var tag1 = a.tag.split("-");
-			  var tag2 = b.tag.split("-")
-			  var tag1_part1 = parseInt(tag1[0].replace(/[^0-9]/g, ""), 10);
-			  var tag2_part1 = parseInt(tag2[0].replace(/[^0-9]/g, ""), 10);
-			  if(tag1_part1 == tag2_part1){
-				  var tag1_part2 = parseInt(tag1[1].replace(/[^0-9]/g, ""), 10);
-				  var tag2_part2 = parseInt(tag2[1].replace(/[^0-9]/g, ""), 10);
-				  if(tag1_part2 == tag2_part2){
-					var j = a.date.split('/');
-					var k = b.date.split('/');
-					return j[2] - k[2] || j[1] - k[1] || j[0] - k[0];
-				  }else{
-					return tag1_part2 > tag2_part2 ? 1:-1;
-				  }
-			  
-			  }else{
-				return tag1_part1 > tag2_part1 ? 1:-1
-			  }
-			  
-			})		
-			this.setState({data:series});
-			if(this.state.data.length >0){
-				var lowestavgTime = Math.min.apply(Math, this.state.data.map(function(item:any) {
-					return item['avgTimeMs'];
-				}))
-				this.setState({lowestValue:lowestavgTime})
-			}		
-			this.setState({loading: false});
-		});		
-	}
-		
-	componentWillReceiveProps(nextProps:any) {		
-		const diffStartDate = this.props.startDate !== nextProps.startDate;
-		const diffEndDate = this.props.endDate !== nextProps.endDate;		
-		const diffQueryName = this.props.queryName !== nextProps.queryName;
-
-		if (diffStartDate || diffEndDate || diffQueryName){
-			this.getGraphData(nextProps.startDate,nextProps.endDate,nextProps.queryName)		
-		}		
-    }
-	
 	render(){		
-		if(this.state.data.length==0){
+		if(this.props.data.length==0){
 			return(<div></div>);
 		}
-		if(this.state.loading){
-            return (<Loader/>)
-        }
-		var i = 0;
-		var strokes_fill = ["#8884d8","#ff7300","#82ca9d","#8884d8"];		
+		var i = -1;
+		var strokes_fill = ["#ff7300","#82ca9d"];
+		var lowestavgTime = 0
+		lowestavgTime = Math.min.apply(Math, this.props.data.map(function(item:any) {
+			return item['avgTimeMs'];
+		}))
+				
 		return (
 				<div  className="chartAlign"> 							
-					<LineChart width = {450} height = {250} data = {this.state.data} >
+					<LineChart width = {550} height = {250} data = {this.props.data} margin={{top: 10, right: 80, left: 0, bottom: 5}}>
 						<XAxis dataKey = "tag_date"/>
 						<YAxis/>
 						<CartesianGrid strokeDasharray = "3 3"/>
-						<Tooltip/>
+						<Tooltip content={<CustomTooltip baselineVal={lowestavgTime}/>} />
 						<Legend />
-						<ReferenceLine y={this.state.lowestValue} stroke="red" />
+						<ReferenceLine y={lowestavgTime} stroke="red" label={lowestavgTime}/>
 						{	
 							this.state.metric_names.map((names:string) => {
 								{i++}

@@ -9,10 +9,11 @@
         "target": "es5",
         "moduleResolution": "node",
         "experimentalDecorators": true,
+        "compileOnSave":true,
         "emitDecoratorMetadata": true,
-        "jsx": "react" 
+        "jsx": "react"
     },
     "include": [
-        "./javascripts/**/*"
+        "./app/assets/javascripts/**/*"
     ]
 }
