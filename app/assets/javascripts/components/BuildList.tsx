@@ -27,7 +27,7 @@ export class BuildList extends React.Component<any,any>{
   constructor(props:any){
         super(props)
         this.state={
-          data:{builds:[]},
+          data:[],
           message:"hi there!"
         };
     }
@@ -40,15 +40,16 @@ export class BuildList extends React.Component<any,any>{
   render(){
     //console.log(this.state.data);
     //console.log("Builds Length is :"+ this.state.data.builds.length);
-    if(this.state.data.builds.length == 0){
+    if(this.state.data.length == 0){
       return(<div>No builds found</div>);
     }
 
     return(<div>
-      <BootstrapTable data={this.state.data.builds} keyField="tag" striped hover>
+      <BootstrapTable data={this.state.data} keyField="tag" striped hover>
         <TableHeaderColumn  dataField="date" >Build Date </TableHeaderColumn>
         <TableHeaderColumn  dataField="tag" >Build Tag </TableHeaderColumn>
-        <TableHeaderColumn  dataField="url" dataFormat={urlFormatter} >URL </TableHeaderColumn>
+        <TableHeaderColumn  dataField="last_commit" >Last Commit </TableHeaderColumn>
+        <TableHeaderColumn  dataField="jenkins_url" dataFormat={urlFormatter} >URL </TableHeaderColumn>
       </BootstrapTable>
     </div>)
   }
@@ -56,7 +57,7 @@ export class BuildList extends React.Component<any,any>{
   componentDidMount(){
     this.setState({message:"Ok bye!"});
     this.getAllBuildList().then((res:any)=>{
-      this.setState({data:res});
+      this.setState({data:res.data});
     })
   }
 }
