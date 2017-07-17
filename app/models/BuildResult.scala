@@ -14,6 +14,15 @@ object BuildResult{
   implicit val jodaDateReads = Reads.jodaDateReads("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
   implicit val jodaDateWrites = Writes.jodaDateWrites("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
   
-  implicit val buildResultReads: Reads[BuildResult] = Json.reads[BuildResult]
-  implicit val buildResultWrites: OWrites[BuildResult] = Json.writes[BuildResult]
+  implicit val buildResultReads: Reads[BuildResult] = Json.reads[BuildResult] /*(
+    (JsPath \ "tag").read[String] and
+    (JsPath \ "last_commit").read[String] and
+    (JsPath \ "jenkins_url").read[String] and
+    (JsPath \ "date").read[String].map(DateTime.parse(_)) (BuildResult.apply _)*/
+  implicit val buildResultWrites: OWrites[BuildResult] = Json.writes[BuildResult] /*(
+    (JsPath \ "tag").read[String] and
+    (JsPath \ "last_commit").read[String] and
+    (JsPath \ "jenkins_url").read[String] and
+    (JsPath \ "date").read[String].map(DateTime.parse(_)) (unlift(BuildResult.unapply))*/
+  
 }
