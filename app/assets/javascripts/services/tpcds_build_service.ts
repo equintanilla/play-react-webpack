@@ -1,8 +1,8 @@
 import BuildService from "./build_service"
 import {injectable} from "inversify"
 
-import * as BB from "bluebird";
-
+//import * as BB from "bluebird";
+import axios from "axios";
 
 @injectable()
 export default class TpcdsBuildService implements  BuildService {
@@ -10,9 +10,12 @@ export default class TpcdsBuildService implements  BuildService {
   getBuilds() {
     let that = this;
     console.log("get builds of tpcds_build_service")
-    return new Promise(function(resolve){
+
+    return axios.get("/api/build_info",
+                {headers: {'Content-Type': 'application/json'}});
+    /*return new Promise(function(resolve){
       resolve(that.getBuildsMock())
-    });
+    });*/
   }
 
   getBuildsMock(){
