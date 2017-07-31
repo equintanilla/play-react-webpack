@@ -19,6 +19,7 @@ POST       /api/t_benchmarks/read_by_dates_qname controllers.TpcdsController.rea
 GET        /api/t_benchmarks/tags/:tagPattern   controllers.TagsController.getBenchmarkTags(tagPattern:String)
 GET        /api/build_info 						controllers.BuildInfoController.index()
 POST       /api/build_info          			controllers.BuildInfoController.create
+GET        /api/build_info/:lastCommit 			controllers.BuildInfoController.read_by_last_commit(lastCommit: String)
 
 GET       /secured 								controllers.SecuredScalaController.index()
 

@@ -32,7 +32,7 @@ import reactivemongo.api.SortOrder
 import reactivemongo.api.Cursor
 import org.joda.time.DateTime
 import mongo.aggregation.BuildResultDb
-import controllers.requests.model.FilterRequest
+import controllers.requests.model.BuildResultRequest
 import controllers.requests.model.TestInject
 
 
@@ -74,6 +74,20 @@ class BuildInfoController @Inject() (val reactiveMongoApi: ReactiveMongoApi,
         val response = collection.map(_.insert(build_result).map[Result](wr => wrToResult(wr)))
         Await.result(response, scala.concurrent.duration.Duration.Inf)
       })
+  }
+  
+  def read_by_last_commit(lastCommit: String) = Action.async{
+    val found = collection.map(_.find(Json.obj("last_commit" -> Json.toJson(lastCommit)))
+    .cursor[BuildResult]()
+    .collect(1, Cursor.FailOnError[List[BuildResult]]())
+    )
+    found.flatMap(buildResults => buildResults.map(brList => Ok(Json.toJson(brList))))    
+    .recover {
+      case e =>
+        log.error("Something went wrong", e)
+        e.printStackTrace()
+        BadRequest(e.getMessage())
+    }   
   }
   
   def wrToResult(wr: WriteResult): Result = {
