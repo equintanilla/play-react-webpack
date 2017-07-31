@@ -32,7 +32,6 @@ import reactivemongo.api.SortOrder
 import reactivemongo.api.Cursor
 import org.joda.time.DateTime
 import mongo.aggregation.BuildResultDb
-import controllers.requests.model.BuildResultRequest
 import controllers.requests.model.TestInject
 
 
