@@ -2,7 +2,14 @@ name := """play-react-webpack"""
 
 version := "1.0-SNAPSHOT"
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala)
+lazy val root = (project in file(".")).enablePlugins(PlayScala,DebianPlugin)
+
+
+maintainer in Linux := "Mahesh Sawaiker <maheshsa@us.ibm.com>"
+
+packageSummary in Linux := "Dashboard to show performance benchmark numbers"
+
+packageDescription := "This is a web application, UI dashboard that pulls data from mongo db and shows fancy graphs"
 
 scalaVersion := "2.11.8"
 
@@ -20,10 +27,11 @@ libraryDependencies ++= Seq(
   "net.codingwell" %% "scala-guice" % "4.0.1",
   "com.mohiva" %% "play-silhouette-crypto-jca" % "4.0.0",
   "com.iheart" %% "ficus" % "1.2.6",
-  "org.reactivemongo" %% "play2-reactivemongo" % "0.12.1"
+  "org.reactivemongo" %% "play2-reactivemongo" % "0.12.1",
+  "org.scalatestplus.play" %% "scalatestplus-play" % "2.0.1" % "test"
 )
 
-PlayKeys.playRunHooks += Webpack(baseDirectory.value)
+//PlayKeys.playRunHooks += Webpack(baseDirectory.value)
 
 routesGenerator := InjectedRoutesGenerator
 

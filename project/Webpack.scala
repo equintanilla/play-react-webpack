@@ -9,17 +9,17 @@ object Webpack {
 
       override def beforeStarted() = {
         
-        println("Starting webpack")
+/*        println("Starting webpack")
         process = Option(
-          Process("webpack.cmd", base).run
-        )
+          Process("webpack", base).run
+        )*/
       }
 
       /*override def afterStarted(addr: InetSocketAddress) = {
         process = Some(
           Process("webpack.cmd --watch", base).run
         )
-        println("Started webpack.cmd --watch for "+base)
+        println("Started webpack --watch for "+base)
       }
 
       override def afterStopped() = {
