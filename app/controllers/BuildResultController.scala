@@ -75,8 +75,8 @@ class BuildInfoController @Inject() (val reactiveMongoApi: ReactiveMongoApi,
       })
   }
   
-  def read_by_last_commit(lastCommit: String) = Action.async{
-    val found = collection.map(_.find(Json.obj("last_commit" -> Json.toJson(lastCommit)))
+  def read_by_last_commit(lastCommit: String, node_label: String) = Action.async{
+    val found = collection.map(_.find(Json.obj("last_commit" -> Json.toJson(lastCommit), "node_label" -> Json.toJson(node_label)))
     .cursor[BuildResult]()
     .collect(1, Cursor.FailOnError[List[BuildResult]]())
     )

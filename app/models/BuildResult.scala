@@ -7,7 +7,7 @@ import play.api.libs.json.{ Json, Reads, Writes, Format }
 import play.api.libs.functional.syntax.{ unapply, unlift }
 import play.api.libs.json.OWrites
 
-case class BuildResult(tag: String, last_commit: String, jenkins_url: String, date: DateTime)
+case class BuildResult(tag: String, last_commit: String, jenkins_url: String, date: DateTime, node_label: String)
 
 
 object BuildResult{
@@ -20,11 +20,13 @@ object BuildResult{
     (JsPath \ "tag").read[String] and
     (JsPath \ "last_commit").read[String] and
     (JsPath \ "jenkins_url").read[String] and
-    (JsPath \ "date").read[String].map(DateTime.parse(_)) (BuildResult.apply _)*/
+    (JsPath \ "date").read[String].map(DateTime.parse(_)) and
+    (JsPath \ "node_label").read[String] (BuildResult.apply _)*/
   implicit val buildResultWrites: OWrites[BuildResult] = Json.writes[BuildResult] /*(
     (JsPath \ "tag").read[String] and
     (JsPath \ "last_commit").read[String] and
     (JsPath \ "jenkins_url").read[String] and
-    (JsPath \ "date").read[String].map(DateTime.parse(_)) (unlift(BuildResult.unapply))*/
+    (JsPath \ "date").read[String].map(DateTime.parse(_)) and
+    (JsPath \ "node_label").read[String] (unlift(BuildResult.unapply))*/
   
 }

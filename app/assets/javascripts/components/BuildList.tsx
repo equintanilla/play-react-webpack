@@ -50,6 +50,7 @@ export class BuildList extends React.Component<any,any>{
         <TableHeaderColumn  dataField="tag" >Build Tag </TableHeaderColumn>
         <TableHeaderColumn  dataField="last_commit" >Last Commit </TableHeaderColumn>
         <TableHeaderColumn  dataField="jenkins_url" dataFormat={urlFormatter} >URL </TableHeaderColumn>
+        <TableHeaderColumn  dataField="node_label" >Label </TableHeaderColumn>
       </BootstrapTable>
     </div>)
   }

@@ -3,23 +3,23 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.Application.index(remPath="")
-GET     /app                           controllers.Application.index(remPath="")
-GET     /app/*remPath                         controllers.Application.index(remPath)
+GET     	/                           					controllers.Application.index(remPath="")
+GET     	/app                           					controllers.Application.index(remPath="")
+GET     	/app/*remPath                         			controllers.Application.index(remPath)
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+GET        /assets/*file               						controllers.Assets.versioned(path="/public", file: Asset)
 
-GET        /api/t_benchmarks         			controllers.TpcdsController.index
-GET        /api/t_benchmark/:id      			controllers.TpcdsController.read(id: String)
-GET        /api/t_benchmark_date/:date      	controllers.TpcdsController.read_by_date(date: String)
-POST       /api/t_benchmark          			controllers.TpcdsController.create_exp
-GET        /api/t_benchmarks/graph         		controllers.TpcdsController.graph
-POST       /api/t_benchmarks/read_by_dates_qname controllers.TpcdsController.read_by_dates_qname
-GET        /api/t_benchmarks/tags/:tagPattern   controllers.TagsController.getBenchmarkTags(tagPattern:String)
-GET        /api/build_info 						controllers.BuildInfoController.index()
-POST       /api/build_info          			controllers.BuildInfoController.create
-GET        /api/build_info/:lastCommit 			controllers.BuildInfoController.read_by_last_commit(lastCommit: String)
+GET        /api/t_benchmarks         						controllers.TpcdsController.index
+GET        /api/t_benchmark/:id      						controllers.TpcdsController.read(id: String)
+GET        /api/t_benchmark_date/:date      				controllers.TpcdsController.read_by_date(date: String)
+POST       /api/t_benchmark          						controllers.TpcdsController.create_exp
+GET        /api/t_benchmarks/graph         					controllers.TpcdsController.graph
+POST       /api/t_benchmarks/read_by_dates_qname 			controllers.TpcdsController.read_by_dates_qname
+GET        /api/t_benchmarks/tags/:tagPattern   			controllers.TagsController.getBenchmarkTags(tagPattern:String)
+GET        /api/build_info 									controllers.BuildInfoController.index()
+POST       /api/build_info          						controllers.BuildInfoController.create
+GET        /api/build_info/:lastCommit/:node_label 			controllers.BuildInfoController.read_by_last_commit(lastCommit: String, node_label: String)
 
-GET       /secured 								controllers.SecuredScalaController.index()
+GET        /secured 										controllers.SecuredScalaController.index()
 
