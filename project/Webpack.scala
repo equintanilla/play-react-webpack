@@ -11,15 +11,15 @@ object Webpack {
         
         println("Starting webpack")
         process = Option(
-          Process("webpack.cmd", base).run
+          Process("./node_modules/.bin/webpack", base).run
         )
       }
 
-      /*override def afterStarted(addr: InetSocketAddress) = {
+      override def afterStarted(addr: InetSocketAddress) = {
         process = Some(
-          Process("webpack.cmd --watch", base).run
+          Process("./node_modules/.bin/webpack --watch", base).run
         )
-        println("Started webpack.cmd --watch for "+base)
+        println("\"./node_modules/.bin/webpack\" --watch for "+base)
       }
 
       override def afterStopped() = {
@@ -29,7 +29,7 @@ object Webpack {
                         var x = p.exitValue()
                         println("Exited with value "+x)
             })
-      }*/
+      }
     
     }
     WebpackHook

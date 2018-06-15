@@ -3,6 +3,7 @@
 var webpack = require('webpack'),
     jsPath  = 'app/assets/javascripts',
     path = require('path'),
+    CleanWebpackPlugin = require('clean-webpack-plugin'),
     srcPath = path.join(__dirname, 'app/assets/javascripts');
 
 var config = {
@@ -11,51 +12,48 @@ var config = {
         app: path.join(srcPath, 'app.jsx')
         //, common: ['react-dom', 'react']
     },
+    
     resolve: {
         alias: {},
         root: srcPath,
-        extensions: ['', '.js'],
+        extensions: ['', '.js']
         modulesDirectories: ['node_modules', jsPath]
     },
     output: {
         path:path.resolve(__dirname, jsPath, 'build'),
         publicPath: '',
-        filename: '[name].js',
-        pathInfo: true
+        filename: '[name].js'
+        //pathInfo: true
     },
 
     module: {
-        noParse: [],
+        //noParse: [],
         loaders: [
             {
                 test: /\.jsx?$/,
                 exclude: /node_modules/,
-                loader: 'babel'
+                loader: 'babel-loader'
             },
             {
                 test: /\.scss$/,
-                loader: 'style!css!sass'
+                include: /\/app\/assets/,
+                loader: 'style-loader!css-loader!sass-loader'
             },
-            { 
-            	test: /\.css$/, 
-            	loader: 'style-loader!css-loader' 
-            },
-            { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "url-loader?limit=100000000000" },
-            { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "url-loader?limit=10000000000" },
-            { test: /\.png$/, loader: "url-loader?limit=100000000" },
-            { test: /\.jpg$/, loader: "url-loader?limit=100000000" }
+            {
+                test: /\.min\.css$/,
+                use: [ 'style-loader', 'css-loader' ]
+            }
         ]
     },
-    sassLoader: {
-        includePaths: [path.resolve(__dirname, '\/app\/assets')]
-    }/*,
     plugins: [
+        //new webpack.optimize.CommonsChunkPlugin('common', 'common.js'),
         new webpack.optimize.UglifyJsPlugin({
             compress: { warnings: false },
-            beautify: true
+            output: { comments: false }
         }),
-        new webpack.NoErrorsPlugin()
-    ]*/
+        new webpack.NoErrorsPlugin(),
+        new CleanWebpackPlugin(['build'])
+    ]
 };
 
 module.exports = config;
